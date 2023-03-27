@@ -80,7 +80,6 @@
     "web-vitals": "^2.1.4"
   },
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   }
 }
