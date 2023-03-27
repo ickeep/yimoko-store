@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig, AxiosRequestTransformer, AxiosResponse } fro
 import { Key } from 'react';
 
 import { getCodeByStatus, IHTTPCode, IHTTPResponse } from './api';
+import { getAutoArr } from './tool';
 
 // 根据 Content-Type 自动转换数据 form-data，
 export const autoTransformDataType: AxiosRequestTransformer = (data, headers) => {
@@ -23,7 +24,7 @@ export const setContentTypeFormData = (config: AxiosRequestConfig) => {
 
 export const http = axios.create({
   headers: { 'X-Requested-With': 'XMLHttpRequest' },
-  transformRequest: [autoTransformDataType],
+  transformRequest: [autoTransformDataType, ...getAutoArr(axios.defaults.transformRequest)],
 });
 
 // 将 response 处理为统一的 { code, data, message } 格式
