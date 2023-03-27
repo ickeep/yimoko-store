@@ -1,7 +1,27 @@
 {
-  "name": "yimoko-store",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@yimoko/store",
+  "version": "0.5.1",
+  "private": false,
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./dist/yimoko-store.es.js",
+      "require": "./dist/yimoko-store.cjs.js"
+    }
+  },
+  "main": "./dist/yimoko-store.cjs.js",
+  "module": "./dist/yimoko-store.es.js",
+  "types": "types/index.d.ts",
+  "files": [
+    "dist",
+    "types",
+    "README.md"
+  ],
+  "jest": {
+    "moduleNameMapper": {
+      "^lodash-es$": "lodash"
+    }
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -39,5 +59,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
