@@ -1,0 +1,10 @@
+build
+mock
+index.html
+dist
+.eslintrc.js
+vite.config.ts
+types
+
+node_modules
+**/node_modules/**
