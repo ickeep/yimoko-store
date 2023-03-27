@@ -23,8 +23,7 @@ export const setContentTypeFormData = (config: AxiosRequestConfig) => {
 
 export const http = axios.create({
   headers: { 'X-Requested-With': 'XMLHttpRequest' },
-  // @ts-ignore
-  transformRequest: [autoTransformDataType, ...axios.defaults.transformRequest],
+  transformRequest: [autoTransformDataType],
 });
 
 // 将 response 处理为统一的 { code, data, message } 格式

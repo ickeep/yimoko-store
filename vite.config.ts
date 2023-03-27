@@ -11,7 +11,7 @@ export default defineConfig({
     target: process.env.VITE_WATCH ? 'modules' : 'es2015',
     lib: {
       formats: ['cjs', 'es', 'umd'],
-      entry: path.resolve(__dirname, `src/library.tsx`),
+      entry: path.resolve(__dirname, `src/library.ts`),
       name: `YimokoStore`,
       fileName: format => `yimoko-store.${format}.js`,
     },

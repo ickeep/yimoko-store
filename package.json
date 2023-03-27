@@ -1,6 +1,6 @@
 {
   "name": "@yimoko/store",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": false,
   "license": "MIT",
   "repository": {
@@ -10,13 +10,15 @@
   "exports": {
     ".": {
       "import": "./dist/yimoko-store.es.js",
-      "require": "./dist/yimoko-store.cjs.js"
+      "require": "./dist/yimoko-store.cjs.js",
+      "default": "./src/library.ts"
     }
   },
-  "main": "./dist/yimoko-store.cjs.js",
-  "module": "./dist/yimoko-store.es.js",
-  "types": "types/index.d.ts",
+  "type": "module",
+  "main": "src/library.ts",
+  "types": "types/library.d.ts",
   "files": [
+    "scr",
     "dist",
     "types",
     "README.md"
