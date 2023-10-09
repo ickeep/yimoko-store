@@ -1,5 +1,5 @@
 import { useField } from '@formily/react';
-import { debounce } from 'lodash-es';
+import { debounce, set } from 'lodash-es';
 import { useState, useRef, SetStateAction, Dispatch, useEffect, useMemo } from 'react';
 
 import { IStoreResponse } from '../store/base';
@@ -38,6 +38,8 @@ export const useAPISearchOptions = <T extends string = 'label' | 'value'>(
 ): [IOptions<T>, boolean, Dispatch<SetStateAction<IOptions<T>>>] => {
   const [options, setOptions] = useState<IOptions<T>>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  // 是否根据 value 进行过反向查找 options
+  const [valueSearched, setValueSearched] = useState<boolean>(false);
   const { dataSource } = useField() as any ?? {};
   const curData = data ?? dataSource;
   const fetchRef = useRef(0);
@@ -95,16 +97,23 @@ export const useAPISearchOptions = <T extends string = 'label' | 'value'>(
     input && fetchOptions?.(input);
   }, [fetchOptions, input]);
 
+  useEffect(() => {
+    // 当 value 变化时，标识未进行过反向查找
+    setValueSearched(false);
+  }, [value]);
+
+
   // 当值变化是，反向查找 options,
   useDeepEffect(() => {
-    const ifFetch = () => !input && !loading && !judgeIsEmpty(value) && fetchOptionsForValue;
+    const ifFetch = () => !valueSearched && !input && !loading && !judgeIsEmpty(value) && fetchOptionsForValue;
     // const curKeys = (searchConfig?.keys ?? keys) as IKeys<T>;
     // options 格式已处理，不需要再传 keys
     // @ts-ignore
     if (ifFetch() && !judgeValueInOptions(value, options)) {
+      setValueSearched(true);
       fetchOptionsForValue?.(value);
     }
-  }, [fetchOptionsForValue, input, keys, loading, options, searchConfig?.keys, value]);
+  }, [fetchOptionsForValue, input, keys, loading, options, searchConfig?.keys, value, valueSearched]);
 
   return [options, loading, setOptions];
 };
