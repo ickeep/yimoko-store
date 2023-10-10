@@ -12,13 +12,13 @@ describe('withSchemaChildren', () => {
 
   test('schema', () => {
     render(<Div schema={{ type: 'object' }}>children</Div>);
-    expect(document.querySelector('body')?.textContent).toBe('');
+    expect(document.body?.textContent).toBe('');
   });
 
-  test('schema', () => {
+  test('schema 2', () => {
     render(<Div schema={
       { type: 'object', properties: { text: { 'x-component': 'div', 'x-component-props': { children: 'text' } } } }
     }>children</Div>);
-    expect(document.querySelector('body')?.textContent).toBe('text');
+    expect(document.body?.textContent).toBe('text');
   });
 });

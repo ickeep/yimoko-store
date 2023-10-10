@@ -44,6 +44,7 @@ describe('SchemaBox', () => {
         <SchemaField schema={{ type: 'object', properties: { a: { 'x-component': 'A' } } }} />
       </SchemaBox>);
     } catch (error) {
+      // eslint-disable-next-line jest/no-conditional-expect
       expect(error).toBeTruthy();
     }
   });

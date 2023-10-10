@@ -131,10 +131,10 @@ describe('useAPISearchOptions', () => {
   });
 
   // 当值变化是，反向查找 options
-  test("fetchOptionsForValue", async () => {
+  test('fetchOptionsForValue', async () => {
     jest.useFakeTimers();
     const labelAPI = jest.fn((params: any) => new Promise<IHTTPResponse>((resolve) => {
-      const data = params?.id === "none" ? '' : [{ label: 'name', value: params?.id }];
+      const data = params?.id === 'none' ? '' : [{ label: 'name', value: params?.id }];
       setTimeout(() => resolve({ code: 0, msg: '', data }), 300);
     }));
     const { result, rerender } = renderHook((value: string) => useAPISearchOptions('', value, '', undefined, labelAPI), { initialProps: '' });
@@ -157,5 +157,5 @@ describe('useAPISearchOptions', () => {
     expect(labelAPI).toBeCalledTimes(2);
     expect(labelAPI).toBeCalledWith({ id: 'value' });
     expect(result.current[0]).toEqual([{ label: 'name', value: 'value' }]);
-  })
+  });
 });

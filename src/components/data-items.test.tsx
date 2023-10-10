@@ -33,7 +33,7 @@ describe('useSchemaItems', () => {
 
   test('null', () => {
     render(<RenderItems schema={{ type: 'object', properties: { arr: { type: 'array', 'x-component': 'DataItems' } } }} />);
-    expect(document.querySelector('body')?.textContent).toBe('');
+    expect(document.body?.textContent).toBe('');
   });
 
   test('obj', () => {

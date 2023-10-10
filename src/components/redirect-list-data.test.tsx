@@ -42,11 +42,11 @@ describe('RedirectListData', () => {
           },
         }} />
     </SchemaFieldProvider>);
-    expect(document.getElementsByTagName('body')[0].textContent).toBe('');
+    expect(document.body.textContent).toBe('');
   });
 
 
-  test('component', () => {
+  test('component 2', () => {
     render(<SchemaFieldProvider value={SchemaField}>
       <SchemaPage
         scope={{ curStore }}

@@ -24,7 +24,7 @@ describe('RenderValue', () => {
 
   test('RenderValue-null', () => {
     render(<RenderValue value={null} />);
-    expect(document.getElementsByTagName('body')[0].textContent).toBe('');
+    expect(document.body.textContent).toBe('');
   });
 
   test('RenderValue-component', () => {

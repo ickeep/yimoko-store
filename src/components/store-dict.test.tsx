@@ -42,6 +42,7 @@ describe('StoreDict', () => {
         { field: 'd', data: [{ value: '1', label: 'a1' }], api: () => Promise.resolve({ code: 1, data: [{ value: '2', label: 'a2' }] }) },
       ],
     });
+    // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
       render(<StoreDict store={store} />);
     });
@@ -61,6 +62,7 @@ describe('StoreDict', () => {
     });
 
     expect(store.values.b).toBe('b');
+    // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
       render(<StoreDict store={store} />);
     });

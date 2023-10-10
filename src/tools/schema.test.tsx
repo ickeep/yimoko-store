@@ -102,6 +102,7 @@ describe('useSchemaItemsOut', () => {
     }} />);
     expect(screen.getByText('button')).toBeInTheDocument();
 
+    // eslint-disable-next-line testing-library/no-node-access
     expect(document.querySelector('.button')).toBeNull();
   });
 });

@@ -17,7 +17,7 @@ describe('RedirectValues', () => {
 
   test('empty', () => {
     render(<RedirectValues />);
-    expect(document.querySelector('body')?.textContent).toBe('');
+    expect(document.body?.textContent).toBe('');
   });
 
   test('component', () => {
@@ -40,7 +40,7 @@ describe('RedirectValues', () => {
     expect(screen.getByText('a')).toBeInTheDocument();
   });
 
-  test('component', () => {
+  test('component 2', () => {
     render(<SchemaFieldProvider value={SchemaField}>
       <SchemaPage
         scope={{ curStore }}

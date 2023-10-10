@@ -32,6 +32,7 @@ describe('useAPIOptions', () => {
     </ConfigStoreProvider>);
     expect(screen.getByText('true')).toBeInTheDocument();
     expect(screen.getByText('[{"label":"l","value":"v"}]')).toBeInTheDocument();
+    // eslint-disable-next-line testing-library/no-unnecessary-act
     await act((async () => { }));
     expect(screen.getByText('false')).toBeInTheDocument();
     expect(screen.getByText('[{"value":"a","label":"a"},{"value":"b","label":"b"}]')).toBeInTheDocument();
@@ -44,6 +45,7 @@ describe('useAPIOptions', () => {
   test('keys', async () => {
     const apiExecutor = jest.fn(() => Promise.resolve({ code: 0, msg: '', data: [{ id: 1, name: 'n1' }] }));
     const configStore = new ConfigStore({}, { apiExecutor, notifier: () => '' });
+    // eslint-disable-next-line testing-library/no-unnecessary-act
     await act((async () => {
       render(<ConfigStoreProvider value={configStore}>
         <C keys={{ label: 'name', value: 'id' }} api={{}} />
@@ -53,9 +55,10 @@ describe('useAPIOptions', () => {
     expect(screen.getByText('[{"label":"n1","value":1}]')).toBeInTheDocument();
   });
 
-  test('keys', async () => {
+  test('keys 2', async () => {
     const apiExecutor = jest.fn(() => Promise.resolve({ code: 0, msg: '', data: 'a|b' }));
     const configStore = new ConfigStore({}, { apiExecutor, notifier: () => '' });
+    // eslint-disable-next-line testing-library/no-unnecessary-act
     await act((async () => {
       render(<ConfigStoreProvider value={configStore}>
         <C splitter='|' api={{}} />

@@ -111,6 +111,7 @@ describe('useStoreSearch', () => {
     const apiExecutor = jest.fn(() => Promise.resolve({ code: 0, msg: '', data: {} }));
     const listStore = new ListStore({ defaultValues: { a: '' }, api: {}, apiExecutor });
     const form = createForm({ values: { a: '' } });
+    // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
       render(<SchemaBox model={form}> <C search="?a=a" store={listStore} /></SchemaBox>);
     });

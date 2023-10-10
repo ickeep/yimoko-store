@@ -17,7 +17,7 @@ describe('withValueChildren', () => {
 
   test('val empty', () => {
     render(<Btn value="" />);
-    expect(document.getElementsByTagName('body')[0].textContent).toBe('');
+    expect(document.body.textContent).toBe('');
   });
 
   test('val node', () => {

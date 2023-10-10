@@ -15,7 +15,7 @@ describe('SchemaPage', () => {
   test('empty', () => {
     const model = createForm({ values: { a: 'a' } });
     render(<SchemaPage components={components} model={model} />);
-    expect(document.getElementsByTagName('body')[0].textContent).toBe('');
+    expect(document.body.textContent).toBe('');
   });
 
   test('model', () => {
