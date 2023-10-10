@@ -46,6 +46,9 @@ dependencies:
     version: 18.2.0
 
 devDependencies:
+  '@ant-design/icons':
+    specifier: ^5.2.6
+    version: 5.2.6(react-dom@18.2.0)(react@18.2.0)
   '@types/jest':
     specifier: ^27.5.2
     version: 27.5.2
@@ -83,7 +86,7 @@ devDependencies:
     specifier: ^29.5.0
     version: 29.5.0(@types/node@16.18.21)
   react-router-dom:
-    specifier: '6.3'
+    specifier: ^6.3
     version: 6.3.0(react-dom@18.2.0)(react@18.2.0)
   react-scripts:
     specifier: 5.0.1
@@ -156,7 +159,7 @@ packages:
     dependencies:
       '@ant-design/colors': 7.0.0
       '@ant-design/icons-svg': 4.3.1
-      '@babel/runtime': 7.21.0
+      '@babel/runtime': 7.23.1
       classnames: 2.3.2
       rc-util: 5.37.0(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0

@@ -63,6 +63,7 @@
     "react-is": "^18.2.0"
   },
   "devDependencies": {
+    "@ant-design/icons": "^5.2.6",
     "@types/jest": "^27.5.2",
     "@types/lodash-es": "^4.17.7",
     "@types/node": "^16.18.21",
