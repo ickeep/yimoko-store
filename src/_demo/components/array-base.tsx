@@ -103,7 +103,6 @@ const TestTable = observable((props: TableProps<any> & { value?: TableProps<any>
           columns={curColumns}
           rowKey={rowKey ?? getRecordIndex}
           onChange={(...rest) => console.log(rest)} />
-        <div>123</div>
         {curChildren}
       </ArrayBase>
     </RecordsScope>);
