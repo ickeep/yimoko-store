@@ -1,4 +1,7 @@
+
+export * from './components/array-base';
 export * from './components/data-items';
+export * from './components/page';
 export * from './components/redirect-list-data';
 export * from './components/redirect-values';
 export * from './components/render-value';
@@ -6,7 +9,6 @@ export * from './components/schema-box';
 export * from './components/schema-page';
 export * from './components/schema-template';
 export * from './components/store-dict';
-export * from './components/transform-scope';
 
 export * from './context/root';
 export * from './context/schema-field';

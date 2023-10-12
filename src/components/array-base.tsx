@@ -1,56 +1,243 @@
 import { ArrayField } from '@formily/core';
 import { useField, useFieldSchema, Schema } from '@formily/react';
-import { createContext, useContext } from 'react';
+import { clone, omitBy } from 'lodash-es';
+import { Key, createContext, useContext, useMemo } from 'react';
+
+import { judgeIsEmpty } from '../library';
 
 const ArrayBaseContext = createContext<IArrayBaseContext>(null as any);
-
-const ArrayItemContext = createContext<IArrayBaseItemProps>(null as any);
 
 export const ArrayBase: React.FC<React.PropsWithChildren<IArrayBaseProps>> = (props) => {
   const field = useField<ArrayField>();
   const schema = useFieldSchema();
+  const disabled = props.disabled ?? field.disabled;
+  const isForceUpdate = props.isForceUpdate ?? false;
+
+  const newProps: Required<IArrayBaseProps> = useMemo(() => {
+    const forceUpdate = () => {
+      isForceUpdate && field.setValue(field.value.slice());
+    };
+    return {
+      disabled,
+      isForceUpdate,
+      onPush: (...items: any[]) => {
+        props?.onPush?.(...items);
+        const result = field.push(...items);
+        forceUpdate();
+        return result;
+      },
+      onPop: () => {
+        props?.onPop?.();
+        const result = field.pop();
+        forceUpdate();
+        return result;
+      },
+      onInsert: (index: number, ...items: any[]) => {
+        props?.onInsert?.(index, ...items);
+        const result = field.insert(index, ...items);
+        forceUpdate();
+        return result;
+      },
+      onRemove: (index: number) => {
+        props?.onRemove?.(index);
+        console.log('onRemove');
+
+        const result = field.remove(index);
+        forceUpdate();
+        return result;
+      },
+      onShift: () => {
+        props?.onShift?.();
+        const result = field.shift();
+        forceUpdate();
+        return result;
+      },
+      onUnshift: (...items: any[]) => {
+        props?.onUnshift?.(...items);
+        const result = field.unshift(...items);
+        forceUpdate();
+        return result;
+      },
+      onMove: (fromIndex: number, toIndex: number) => {
+        props?.onMove?.(fromIndex, toIndex);
+        const result = field.move(fromIndex, toIndex);
+        forceUpdate();
+        return result;
+      },
+      onMoveUp: (index: number) => {
+        props?.onMoveUp?.(index);
+        const result = field.moveUp(index);
+        forceUpdate();
+        return result;
+      },
+      onMoveDown: (index: number) => {
+        props?.onMoveDown?.(index);
+        const result = field.moveDown(index);
+        forceUpdate();
+        return result;
+      },
+    };
+  }, [disabled, field, isForceUpdate, props]);
+
   return (
-    <ArrayBaseContext.Provider value={{ field, schema, props }}>
+    <ArrayBaseContext.Provider value={{ field, schema, props: newProps }}>
       {props.children}
     </ArrayBaseContext.Provider>
   );
 };
 
-export const ArrayBaseItem: React.FC<React.PropsWithChildren<IArrayBaseItemProps>> = ({ children, ...rest }) => (
-  <ArrayItemContext.Provider value={rest}>{children}</ArrayItemContext.Provider>
-);
-
-const takeRecord = (val: any, index?: number) => (typeof val === 'function' ? val(index) : val);
-
 export const useArray = () => useContext(ArrayBaseContext);
 
-export const useIndex = (index?: number) => {
-  const ctx = useContext(ArrayItemContext);
-  return ctx ? ctx.index : index;
-};
+export type IPropsMapping = Partial<Record<keyof Omit<IArrayBaseProps, 'disabled' | 'isForceUpdate' | 'onMoveUp' | 'onMoveDown'>, string>>;
 
-export const useRecord = (record?: number) => {
-  const ctx = useContext(ArrayItemContext);
-  return takeRecord(ctx ? ctx.record : record, ctx?.index);
-};
+// 返回组件的 props 增加字段 arrayParams
+type ICProps<T extends Object = Record<Key, any>, R = any> = T & { arrayParams?: { index?: number, toIndex?: number, items?: R[] } };
+
+export function withArrayComponent<T extends Object = Record<Key, any>, R = any>(
+  C: React.ComponentClass<T> | React.FunctionComponent<T>,
+  propsMapping?: IPropsMapping,
+  defaultProps?: Partial<T>,
+) {
+  return (props: ICProps<T, R>) => {
+    const { arrayParams, ...rest } = props;
+    const arrayCtx = useArray();
+    const arrProps = arrayCtx.props;
+    const { index = 0, toIndex = 0, items = [] } = arrayParams ?? {};
+    const curProps = useMemo(() => {
+      if (judgeIsEmpty(propsMapping)) {
+        return rest;
+      }
+      const valueKeys = Object.values(propsMapping);
+      const cProps = omitBy(rest, (v, k) => !valueKeys.includes(k as any) || v === undefined);
+      const emit = (key: keyof IPropsMapping, ...args: any[]) => {
+        const name = propsMapping[key];
+        name && (rest as any)?.[name]?.(...args);
+      };
+      const fnMap: Record<keyof IPropsMapping, (...args: any) => any> = {
+        onPush: (...args) => {
+          emit('onPush', items, ...args);
+          arrProps.onPush(...items);
+        },
+        onPop: (...args) => {
+          emit('onPop', ...args);
+          arrProps.onPop();
+        },
+        onInsert: (...args) => {
+          emit('onInsert', index, items, ...args);
+          arrProps.onInsert(index, ...items);
+        },
+        onRemove: (...args) => {
+          emit('onRemove', index, ...args);
+          arrProps.onRemove(index);
+        },
+        onShift: (...args) => {
+          emit('onShift', ...args);
+          arrProps.onShift();
+        },
+        onUnshift: (...args) => {
+          emit('onUnshift', items, ...args);
+          arrProps.onUnshift(...items);
+        },
+        onMove: (...args) => {
+          emit('onMove', index, toIndex, ...args);
+          arrProps.onMove(index, toIndex);
+        },
+      };
+      (Object.keys(propsMapping) as Array<keyof IPropsMapping>).forEach((key) => {
+        const name = propsMapping[key] as keyof unknown;
+        const fn = fnMap[key] as any;
+        cProps[name] = fn;
+      });
+      return cProps;
+    }, [arrProps, index, items, rest, toIndex]);
+
+    // @ts-ignore
+    return <C {...defaultProps} {...curProps} />;
+  };
+}
+
+export type IPropsMappingItem = Partial<Record<keyof Pick<IArrayBaseProps, 'onRemove' | 'onMoveUp' | 'onMoveDown'> | 'onCopy', string>>;
+
+
+export function withArrayItemComponent<T extends Object = Record<Key, any>>(
+  C: React.ComponentClass<T> | React.FunctionComponent<T>,
+  propsMapping?: IPropsMappingItem,
+  defaultProps?: Partial<T>,
+) {
+  return (props: T) => {
+    const arrayCtx = useArray();
+    const arrField = arrayCtx.field;
+    const arrProps = arrayCtx.props;
+    const field = useField();
+
+    const curProps = useMemo(() => {
+      if (judgeIsEmpty(propsMapping)) {
+        return props;
+      }
+      const valueKeys = Object.values(propsMapping);
+      const cProps = omitBy(props, (v, k) => !valueKeys.includes(k as any) || v === undefined);
+      const emit = (key: keyof IPropsMappingItem, ...args: any[]) => {
+        const name = propsMapping[key];
+        name && (props as any)?.[name]?.(...args);
+      };
+      const fnMap: Record<keyof IPropsMappingItem, (...args: any) => any> = {
+        onMoveUp: (...args) => {
+          const { index } = field;
+          console.log('index', index);
+
+          emit('onMoveUp', index, ...args);
+          arrProps.onMoveUp(index);
+        },
+        onMoveDown: (...args) => {
+          const { index } = field;
+          emit('onMoveDown', index, ...args);
+          arrProps.onMoveDown(index);
+        },
+        onRemove: (...args) => {
+          const { index } = field;
+          emit('onRemove', index, ...args);
+          arrProps.onRemove(index);
+        },
+        onCopy: (...args) => {
+          const { index } = field;
+          emit('onCopy', index, ...args);
+          const value = clone(arrField.value[index]);
+          const distIndex = index + 1;
+          arrProps.onInsert(distIndex, value);
+        },
+      };
+
+      (Object.keys(propsMapping) as Array<keyof IPropsMappingItem>).forEach((key) => {
+        const name = propsMapping[key] as keyof T;
+        const fn = fnMap[key] as any;
+        cProps[name] = fn;
+      });
+
+      return cProps as T;
+    }, [arrField.value, arrProps, field, props]);
+
+    return <C {...defaultProps} {...curProps} />;
+  };
+}
 
 export interface IArrayBaseContext {
-  props: IArrayBaseProps
+  props: Required<IArrayBaseProps>
   field: ArrayField
   schema: Schema
 }
 
 export interface IArrayBaseProps {
   disabled?: boolean
-  onAdd?: (index: number) => void
-  onCopy?: (index: number) => void
-  onRemove?: (index: number) => void
-  onMoveDown?: (index: number) => void
-  onMoveUp?: (index: number) => void
-}
-
-export interface IArrayBaseItemProps {
-  index: number
-  record: ((index: number) => Record<string, any>) | Record<string, any>
+  // 是否强制更新 当组件内部自行管理数据源时，需要触发更新 例如：Table
+  isForceUpdate?: boolean
+  onPush?: (...items: any[]) => Promise<void>;
+  onPop?: () => Promise<void>;
+  onInsert?: (index: number, ...items: any[]) => Promise<void>;
+  onRemove?: (index: number) => Promise<void>;
+  onShift?: () => Promise<void>;
+  onUnshift?: (...items: any[]) => Promise<void>;
+  onMove?: (fromIndex: number, toIndex: number) => Promise<void>;
+  onMoveUp?: (index: number) => Promise<void>;
+  onMoveDown?: (index: number) => Promise<void>;
 }
 
