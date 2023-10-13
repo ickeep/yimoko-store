@@ -1,7 +1,9 @@
 import { define, observable, action } from '@formily/reactive';
-import { createContext, Key, ReactNode, useContext } from 'react';
+import { ComponentType, createContext, Key, ReactNode, useContext } from 'react';
 
 import { IAPIRequestConfig, IHTTPCode, IHTTPResponse } from '../tools/api';
+
+import { IStoreResponse } from './base';
 
 export const unknownAPIRes = {
   code: IHTTPCode.networkError,
@@ -9,11 +11,36 @@ export const unknownAPIRes = {
   data: '',
 };
 
+export interface ErrorProps {
+  isReturnIndex?: boolean
+  loading?: boolean;
+  response: IStoreResponse<any, any>;
+  onAgain?: () => any | Promise<any>;
+  icon?: string
+  children?: React.ReactNode
+  [key: string]: any
+}
+
+export type LoadingComponent = ComponentType<{ loading?: boolean, children?: ReactNode } & Record<Key, any>>;
+
+export type ErrorComponent = ComponentType<ErrorProps>;
+
+export type SkeletonComponent = ComponentType<{ loading?: boolean, children?: ReactNode } & Record<Key, any>>;
+
+export type IConfigComponents = {
+  Loading?: LoadingComponent,
+  Error?: ErrorComponent,
+  Skeleton?: SkeletonComponent,
+  [key: string]: ComponentType<any> | undefined
+};
+
 export interface IConfigProvider {
   apiExecutor: IAPIExecutor,
   notifier: INotifier,
   useRouter: IUseRouter;
   report?: IReport
+  // 依赖的组件
+  components?: IConfigComponents
 }
 
 export class ConfigStore<T extends object = any> {
@@ -23,14 +50,16 @@ export class ConfigStore<T extends object = any> {
   apiExecutor: IAPIExecutor;
   // 路由器
   useRouter: IUseRouter;
+  components: IConfigComponents;
 
   constructor(config: T, provider: IConfigProvider) {
     this.config = config;
-    const { apiExecutor, notifier, report, useRouter } = provider;
+    const { apiExecutor, notifier, report, useRouter, components = {} } = provider;
     report && (this.report = report);
     this.apiExecutor = apiExecutor;
     this.notifier = notifier;
     this.useRouter = useRouter;
+    this.components = components;
 
     define(this, {
       config: observable,
@@ -72,6 +101,8 @@ export const useNotifier = () => useConfigStore().notifier;
 export const useAPIExecutor = () => useConfigStore().apiExecutor;
 
 export const useRouter = () => useConfigStore().useRouter();
+
+export const useConfigComponents = () => useConfigStore().components;
 
 export const useConfig = <C extends object = any>() => {
   const store = useConfigStore() as ConfigStore<C>;

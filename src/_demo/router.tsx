@@ -3,14 +3,26 @@ import { DataNode } from 'antd/es/tree';
 import { Link, Route, Routes } from 'react-router-dom';
 
 import { ArrayBaseDemo } from './components/array-base';
+import { AddPageDemo } from './components/page/add';
 
 import { IndexDemo } from '.';
 
 export const ROUTES_CONF: Array<IRouteConf> = [
   { path: '/', component: IndexDemo, name: 'index' },
   {
-    path: '/components', name: '组件',
-    children: [{ path: '/arrayBase', component: ArrayBaseDemo, name: '数组基础 - ArrayBase' }],
+    path: '/components/', name: '组件',
+    children: [
+      {
+        path: 'page/', name: '页面', children: [
+          { path: 'add', name: '添加', component: AddPageDemo },
+          { path: 'edit', name: '编辑' },
+          { path: 'list', name: '列表' },
+          { path: 'view', name: '查看' },
+        ],
+      },
+      { path: 'arrayBase', component: ArrayBaseDemo, name: '数组基础 - ArrayBase' },
+
+    ],
   },
 ];
 

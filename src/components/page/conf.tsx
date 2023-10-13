@@ -2,6 +2,7 @@ import { Key } from 'react';
 
 import { IStore } from '../../store';
 import { IBaseStoreConfig } from '../../store/base';
+import { IConfigComponents, NavigateFunction, useRouter } from '../../store/config';
 import { IOperateStoreConfig, IRunFn } from '../../store/operate';
 import { IFieldsConfig } from '../../store/utils/field';
 import { IAPIRequestConfig } from '../../tools/api';
@@ -34,8 +35,7 @@ export const getDetailPath = (record: Record<Key, any>, config: PageStoreConfig)
   return `${basePath}${detail}?${idKey}=${record[idKey]}`;
 };
 
-// TODO nav: NavigateFunction
-export const jumpOnOperateSuccess = (pageProps: OperatePageProps, nav: any) => {
+export const jumpOnOperateSuccess = (pageProps: OperatePageProps, nav: NavigateFunction) => {
   const { jumpOnSuccess = !pageProps.isBoxContent, storeConfig } = pageProps;
   if (jumpOnSuccess === true) {
     const listPath = getListPath(storeConfig);
@@ -48,16 +48,15 @@ export const jumpOnOperateSuccess = (pageProps: OperatePageProps, nav: any) => {
 };
 
 export const useOperateRunAfter = (pageProps: OperatePageProps<any, any>) => {
-  // TODO
-  const nav = 'useNavigate()';
-  const { store, parentStore, isRefresh = pageProps.isBoxContent, onSuccess, onFail } = pageProps;
+  const { navigate } = useRouter();
+  const { store, parentStore, isRefreshParent = pageProps.isBoxContent, onSuccess, onFail } = pageProps;
 
   const { runAfter = {} } = store ?? {};
   if (judgeIsEmpty(runAfter.runOnSuccess)) {
     runAfter.runOnSuccess = (...args) => {
-      jumpOnOperateSuccess(pageProps, nav);
+      jumpOnOperateSuccess(pageProps, navigate);
       onSuccess?.(...args);
-      isRefresh && parentStore?.runAPI?.();
+      isRefreshParent && parentStore?.runAPI?.();
     };
   }
   if (judgeIsEmpty(runAfter.runOnFail)) {
@@ -93,17 +92,20 @@ export interface PageStoreConfig<V extends object = Record<Key, any>> {
   api: Record<APIKey, IAPIRequestConfig>
   map?: Record<Key, Record<Key, any>>
   options?: Record<Key, IOptions<any>>
+  components?: IConfigComponents
 }
 
 export interface OperatePageProps<T extends object = Record<Key, any>, R extends object = any> extends Omit<StorePageProps, 'store'> {
   values?: T,
+  // 数据源的 Store 例如在编辑页面，需要传入详情数据
   dataStore?: IBaseStoreConfig<any, any>,
   storeConfig: PageStoreConfig<T>
   store?: IOperateStoreConfig<T, R>
   parentStore?: IStore
+  // 成功后跳转的页面，true为列表页，string为指定页面
   jumpOnSuccess?: string | boolean
   onSuccess?: IRunFn
   onFail?: IRunFn
   // 当弹窗时，成功是否刷新父页面
-  isRefresh?: boolean
+  isRefreshParent?: boolean
 }

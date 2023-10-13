@@ -4,9 +4,7 @@ import { Key, ReactElement } from 'react';
 
 import { useDeepMemo } from '../../hooks/use-deep-memo';
 import { IStoreConfig } from '../../store';
-
 import { BaseStore } from '../../store/base';
-
 import { judgeIsEmpty } from '../../tools/tool';
 
 import { OperatePageProps, useOperateRunAfter } from './conf';
@@ -16,7 +14,7 @@ import { StorePage } from './store';
 export const EditPage: <T extends object = Record<Key, any>, R extends object = any>(props: OperatePageProps<T, R>) => ReactElement<any, any> | null = observer((props) => {
   const {
     values, dataStore, storeConfig, store, scope,
-    onSuccess, onFail, parentStore, isRefresh, jumpOnSuccess, ...rest
+    onSuccess, onFail, parentStore, isRefreshParent, jumpOnSuccess, ...rest
   } = props;
   const { fieldsConfig, api } = storeConfig;
   const curScope = useDeepMemo(() => ({ $config: storeConfig, ...scope }), [storeConfig, scope]);

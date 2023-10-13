@@ -6,12 +6,11 @@ import { useDeepMemo } from '../../hooks/use-deep-memo';
 import { useStore } from '../../hooks/use-store';
 import { IStoreConfig } from '../../store';
 import { BaseStore, IBaseStoreConfig } from '../../store/base';
-
 import { judgeIsEmpty } from '../../tools/tool';
 
 import { PageStoreConfig } from './conf';
 import { StorePageProps, StorePage } from './store';
-
+import { StorePageContent } from './store-content';
 
 export interface DetailPageProps<T extends object = Record<Key, any>, R extends object = any> extends Omit<StorePageProps<any>, 'store'> {
   values?: T,
@@ -44,7 +43,7 @@ export const DetailPage = observer((props: DetailPageProps) => {
 });
 
 export const FetchDetailPage: <T extends object = Record<Key, any>, R extends object = any>(props: DetailPageProps<T, R>) => ReactElement<any, any> | null = observer((props) => {
-  const { dataStore, storeConfig } = props;
+  const { dataStore, storeConfig, skeleton } = props;
   const { api, idKey = 'id' } = storeConfig;
 
   const detailStore = useStore({
@@ -58,18 +57,18 @@ export const FetchDetailPage: <T extends object = Record<Key, any>, R extends ob
 
   return (
     <StorePage store={detailStore} >
-      {/* TODO */}
-      {/* <StorePageContent > */}
-      <DetailContent {...props} detailStore={detailStore} />
-      {/* </StorePageContent> */}
+      <StorePageContent skeleton={skeleton} >
+        <DetailContent {...props} detailStore={detailStore} />
+      </StorePageContent>
     </StorePage>
   );
 });
 
 
-// eslint-disable-next-line max-len
-const DetailContent: <T extends object = Record<Key, any>, R extends object = any> (props: DetailPageProps<T, R> & { detailStore: BaseStore<any, any> }) => ReactElement<any, any> | null = observer((props) => {
-  const { values, dataStore, storeConfig, detailStore, store, ...rest } = props;
+const DetailContent: <T extends object = Record<Key, any>, R extends object = any> (
+  props: DetailPageProps<T, R> & { detailStore: BaseStore<any, any> }
+) => ReactElement<any, any> | null = observer((props) => {
+  const { values, dataStore, storeConfig, detailStore, skeleton, store, ...rest } = props;
   const { fieldsConfig } = storeConfig;
 
   const curStore = useDeepMemo(() => {

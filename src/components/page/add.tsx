@@ -12,7 +12,7 @@ import { StorePageProps, StorePage } from './store';
 export const AddPage: <T extends object = Record<Key, any>, R extends object = any>(props: OperatePageProps<T, R>) => ReactElement<any, any> | null = observer((props) => {
   const {
     storeConfig, store, scope,
-    jumpOnSuccess, parentStore, isRefresh, onSuccess, onFail, ...rest } = props;
+    jumpOnSuccess, parentStore, isRefreshParent, onSuccess, onFail, ...rest } = props;
   const { fieldsConfig, api } = storeConfig;
   const runAfter = useOperateRunAfter(props);
 
@@ -36,6 +36,5 @@ export const AddPage: <T extends object = Record<Key, any>, R extends object = a
 
   const curProps: StorePageProps<any, any> = useDeepMemo(() => ({ ...rest, scope: curScope, store: curStore }), [curScope, curStore, rest]);
 
-  return (
-    <StorePage  {...curProps} />);
+  return (<StorePage  {...curProps} />);
 });

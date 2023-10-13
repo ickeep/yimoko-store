@@ -9,13 +9,14 @@ import { SchemaPage } from '../schema-page';
 import { StoreBindRouter } from '../store-bind-router';
 import { StoreDict } from '../store-dict';
 
-export interface StorePageProps<V extends object = IStoreValues, R extends object = any> extends React.HTMLAttributes<HTMLDivElement> {
+export interface StorePageProps<V extends object = IStoreValues, R extends object = any, S extends object = Record<string, any>> extends React.HTMLAttributes<HTMLDivElement> {
   store: IStore<V, R> | IStoreConfig<V, R>;
   options?: Omit<IFormProps<any>, 'values' | 'initialValues'>,
   components?: SchemaReactComponents;
   scope?: any;
   schema?: ISchema
   isBoxContent?: boolean
+  skeleton?: S | false
 }
 
 export const StorePage: <V extends object = IStoreValues, R extends object = any>(props: StorePageProps<V, R>) => React.ReactElement | null = observer((props) => {

@@ -1,4 +1,10 @@
-
+export * from './components/page/add';
+export * from './components/page/conf';
+export * from './components/page/detail';
+export * from './components/page/edit';
+export * from './components/page/list';
+export * from './components/page/store-content';
+export * from './components/page/store';
 export * from './components/array-base';
 export * from './components/data-items';
 export * from './components/page/store';
@@ -8,11 +14,12 @@ export * from './components/render-value';
 export * from './components/schema-box';
 export * from './components/schema-page';
 export * from './components/schema-template';
+export * from './components/store-bind-router';
 export * from './components/store-dict';
 
 export * from './context/root';
-export * from './context/schema-field';
 export * from './context/schema-components';
+export * from './context/schema-field';
 
 export * from './hoc/schema-children';
 export * from './hoc/value-children';

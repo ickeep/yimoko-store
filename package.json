@@ -43,6 +43,11 @@
     ]
   },
   "jest": {
+    "coveragePathIgnorePatterns": [
+      "/index.tsx",
+      "reportWebVitals",
+      "/src/_demo"
+    ],
     "moduleNameMapper": {
       "^lodash-es$": "lodash"
     }
