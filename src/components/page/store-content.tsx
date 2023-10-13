@@ -28,7 +28,7 @@ export const StorePageContent = observer((props: StorePageContentProps) => {
   const Skeleton = useMemo(() => (pageComponents?.Skeleton ?? components?.Skeleton ?? (() => 'loading')), [components?.Skeleton, pageComponents?.Skeleton]);
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const ErrorContent = useMemo(() => (pageComponents?.Error ?? components?.Error ?? (() => 'error')), [components?.Error, pageComponents?.Error]);
+  const ErrorContent = useMemo(() => (pageComponents?.ErrorContent ?? components?.ErrorContent ?? (() => 'error')), [components?.ErrorContent, pageComponents?.ErrorContent]);
 
   const curStore = useMemo(() => store ?? (scope?.curStore as IStore), [store, scope?.curStore]);
 

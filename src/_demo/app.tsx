@@ -5,7 +5,7 @@ import zhCN from 'antd/lib/locale/zh_CN';
 
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { ConfigStore, ConfigStoreProvider, INotifier, SchemaComponentsProvider, SchemaFieldProvider, httpRequest, judgeValidKey } from '../library';
+import { ConfigStore, ConfigStoreProvider, INotifier, SchemaComponentsProvider, SchemaFieldProvider, httpRequest, judgeValidKey, withValueChildren } from '../library';
 
 import { ErrorContent } from './error-content';
 import { ROUTER_MENUS, Router } from './router';
@@ -13,7 +13,7 @@ import { ROUTER_MENUS, Router } from './router';
 
 const components = {
   Typography,
-  Title: Typography.Title,
+  Title: withValueChildren(Typography.Title),
   Input: (props: any) => <Input {...props} onChange={e => props?.onChange?.(e.target.value, e)} />,
   Button,
 };
