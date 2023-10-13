@@ -1,5 +1,5 @@
 import { observer } from '@formily/react';
-import { Key, ReactElement } from 'react';
+import { Key, ReactElement, useMemo } from 'react';
 
 import { useSchemaComponents } from '../../context/schema-components';
 import { useDeepMemo } from '../../hooks/use-deep-memo';
@@ -82,6 +82,8 @@ const DetailContent: <T extends object = Record<Key, any>, R extends object = an
     return ({ fieldsConfig, ...store, values, defaultValues: values });
   }, [store, fieldsConfig, detailStore.response.data]);
 
+  const scope = useMemo(() => ({ detailStore }), [detailStore]);
 
-  return <StorePage {...rest} store={curStore} />;
+
+  return <StorePage {...rest} store={curStore} scope={scope} />;
 });
