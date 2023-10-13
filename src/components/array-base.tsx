@@ -40,8 +40,6 @@ export const ArrayBase: React.FC<React.PropsWithChildren<IArrayBaseProps>> = (pr
       },
       onRemove: (index: number) => {
         props?.onRemove?.(index);
-        console.log('onRemove');
-
         const result = field.remove(index);
         forceUpdate();
         return result;
@@ -183,8 +181,6 @@ export function withArrayItemComponent<T extends Object = Record<Key, any>>(
       const fnMap: Record<keyof IPropsMappingItem, (...args: any) => any> = {
         onMoveUp: (...args) => {
           const { index } = field;
-          console.log('index', index);
-
           emit('onMoveUp', index, ...args);
           arrProps.onMoveUp(index);
         },

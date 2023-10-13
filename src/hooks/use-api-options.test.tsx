@@ -24,8 +24,9 @@ describe('useAPIOptions', () => {
   });
 
   test('api', async () => {
+    const useRouter = jest.fn();
     const apiExecutor = jest.fn(() => Promise.resolve({ code: 0, msg: '', data: { a: 'a', b: 'b' } }));
-    const configStore = new ConfigStore({}, { apiExecutor, notifier: () => '' });
+    const configStore = new ConfigStore({}, { apiExecutor, useRouter, notifier: () => '' });
 
     render(<ConfigStoreProvider value={configStore}>
       <C data={[{ label: 'l', value: 'v' }]} api={{}} />
@@ -44,7 +45,8 @@ describe('useAPIOptions', () => {
 
   test('keys', async () => {
     const apiExecutor = jest.fn(() => Promise.resolve({ code: 0, msg: '', data: [{ id: 1, name: 'n1' }] }));
-    const configStore = new ConfigStore({}, { apiExecutor, notifier: () => '' });
+    const useRouter = jest.fn();
+    const configStore = new ConfigStore({}, { apiExecutor, useRouter, notifier: () => '' });
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act((async () => {
       render(<ConfigStoreProvider value={configStore}>
@@ -56,8 +58,9 @@ describe('useAPIOptions', () => {
   });
 
   test('keys 2', async () => {
+    const useRouter = jest.fn();
     const apiExecutor = jest.fn(() => Promise.resolve({ code: 0, msg: '', data: 'a|b' }));
-    const configStore = new ConfigStore({}, { apiExecutor, notifier: () => '' });
+    const configStore = new ConfigStore({}, { apiExecutor, useRouter, notifier: () => '' });
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act((async () => {
       render(<ConfigStoreProvider value={configStore}>

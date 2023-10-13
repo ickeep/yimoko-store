@@ -4,7 +4,7 @@ import { Key, useCallback, useEffect, useRef } from 'react';
 
 import { IStore } from '../store';
 
-export const useStoreSearch = (store: IStore, search: string | Partial<Record<Key, any>>) => {
+export const useStoreBindRouter = (store: IStore, search: string | Partial<Record<Key, any>>, params?: Record<Key, any>) => {
   const form = useForm();
   const isNotFirst = useRef(false);
   const { isRunNow } = store;
@@ -24,10 +24,10 @@ export const useStoreSearch = (store: IStore, search: string | Partial<Record<Ke
   }, [isRunNow]);
 
   useEffect(() => {
-    const { isBindSearch, values, setValuesBySearch, runAPI } = store;
-    if (isBindSearch) {
+    const { isBindRouter, values, setValuesByRouter, runAPI } = store;
+    if (isBindRouter) {
       const oldValues = cloneDeep(values);
-      setValuesBySearch(search, 'all');
+      setValuesByRouter(search, params, 'all');
       const hasChanged = !isEqual(oldValues, store.values);
 
       // 列表页 search 参数变化，则重新请求数据
@@ -42,5 +42,5 @@ export const useStoreSearch = (store: IStore, search: string | Partial<Record<Ke
       };
       handleRun();
     }
-  }, [form, getIsRun, search, store]);
+  }, [form, getIsRun, params, search, store]);
 };

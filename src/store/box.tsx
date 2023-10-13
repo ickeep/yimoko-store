@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
+import { observer } from '@formily/react';
 import { action, define, observable } from '@formily/reactive';
-import { observer } from '@formily/reactive-react';
 import { cloneElement, Component, createContext, FC, isValidElement, Key, ReactElement, useContext, useEffect, useState } from 'react';
 import { isValidElementType } from 'react-is';
 

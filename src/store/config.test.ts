@@ -6,7 +6,8 @@ describe('ConfigStore', () => {
   test('ConfigStore', () => {
     const apiExecutor = jest.fn();
     const notifier = jest.fn();
-    const configStore = new ConfigStore({ a: 'a', b: 'b', c: 'c' }, { apiExecutor, notifier });
+    const useRouter = jest.fn();
+    const configStore = new ConfigStore({ a: 'a', b: 'b', c: 'c' }, { apiExecutor, notifier, useRouter });
     expect(configStore.config).toEqual({ a: 'a', b: 'b', c: 'c' });
     expect(configStore.apiExecutor).toBe(apiExecutor);
     expect(configStore.notifier).toBe(notifier);
@@ -20,7 +21,7 @@ describe('ConfigStore', () => {
     configStore.logger('test');
     expect(report).toBeCalledWith('test', 'info');
 
-    const configStore1 = new ConfigStore({}, { apiExecutor, notifier, report });
+    const configStore1 = new ConfigStore({}, { apiExecutor, notifier, useRouter, report });
     configStore1.report = report;
     configStore1.logger('test');
     expect(report).toBeCalledWith('test', 'info');

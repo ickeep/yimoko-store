@@ -31,7 +31,7 @@ export class ListStore<V extends object = IStoreValues, R extends object = any> 
 
     super({
       isFilterEmptyAtRun: true,
-      isBindSearch: true,
+      isBindRouter: true,
       isRunNow: true,
       ...args,
       defaultValues: curDefaultValues,

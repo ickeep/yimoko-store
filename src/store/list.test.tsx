@@ -5,7 +5,7 @@ describe('ListStore', () => {
   test('df', () => {
     const store = new ListStore();
     expect(store.isFilterEmptyAtRun).toBeTruthy();
-    expect(store.isBindSearch).toBeTruthy();
+    expect(store.isBindRouter).toBeTruthy();
     expect(store.isRunNow).toBeTruthy();
     expect(store.selectedRowKeys).toEqual([]);
     expect(store.keysConfig).toEqual(defaultKeysConfig);
@@ -16,7 +16,7 @@ describe('ListStore', () => {
   test('config', () => {
     const store = new ListStore({
       api: {},
-      isBindSearch: false,
+      isBindRouter: false,
       isRunNow: false,
       isFilterEmptyAtRun: false,
       queryRoutingType: 'replace',
@@ -24,7 +24,7 @@ describe('ListStore', () => {
       defaultValues: { a: 'a' },
     });
     expect(store.isFilterEmptyAtRun).toBeFalsy();
-    expect(store.isBindSearch).toBeFalsy();
+    expect(store.isBindRouter).toBeFalsy();
     expect(store.isRunNow).toBeFalsy();
     expect(store.keysConfig).toEqual({ ...defaultKeysConfig, page: 'p', sortOrder: 'so' });
     expect(store.queryRoutingType).toBe('replace');

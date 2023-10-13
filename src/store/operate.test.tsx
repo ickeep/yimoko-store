@@ -8,7 +8,7 @@ describe('OperateStore', () => {
   test('df', () => {
     const store = new OperateStore();
     expect(store.isFilterEmptyAtRun).toBeFalsy();
-    expect(store.isBindSearch).toBeFalsy();
+    expect(store.isBindRouter).toBeFalsy();
     expect(store.isRunNow).toBeFalsy();
     expect(store.form).toBeUndefined();
     expect(store.notifier).toBeUndefined();

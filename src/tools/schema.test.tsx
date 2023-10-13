@@ -9,6 +9,7 @@ import { getItemPropsBySchema } from './schema';
 
 
 describe('useSchemaItemsOut', () => {
+  test('useSchemaItemsOut', () => { });
   // const Render = ({ schema }: { schema?: ISchema }) => {
   //   const components = {
   //     A: ({ componentName, schemaKey }: { componentName: string, schemaKey: string | number }) => {

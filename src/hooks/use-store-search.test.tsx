@@ -7,12 +7,12 @@ import { IStore } from '../store';
 import { BaseStore } from '../store/base';
 import { ListStore } from '../store/list';
 
-import { useStoreSearch } from './use-store-search';
+import { useStoreBindRouter } from './use-store-search';
 
-describe('useStoreSearch', () => {
+describe('useStoreBindRouter', () => {
   const apiExecutor = jest.fn(() => Promise.resolve({ code: 0, msg: '', data: '' }));
   const C = ({ search, store }: { search: string, store: IStore }) => {
-    useStoreSearch(store, search);
+    useStoreBindRouter(store, search);
     return null;
   };
   let baseStore = new BaseStore({ defaultValues: { a: '' }, api: {}, apiExecutor });
@@ -22,16 +22,16 @@ describe('useStoreSearch', () => {
   });
 
   test('baseStore', () => {
-    renderHook((search: string) => useStoreSearch(baseStore, search), { initialProps: '?a=a' });
+    renderHook((search: string) => useStoreBindRouter(baseStore, search), { initialProps: '?a=a' });
     expect(baseStore.values.a).toBe('');
   });
 
-  test('isBindSearch', () => {
-    baseStore.isBindSearch = true;
-    renderHook((search: string) => useStoreSearch(baseStore, search), { initialProps: '?a=a' });
+  test('isBindRouter', () => {
+    baseStore.isBindRouter = true;
+    renderHook((search: string) => useStoreBindRouter(baseStore, search), { initialProps: '?a=a' });
     expect(baseStore.values.a).toBe('a');
 
-    renderHook((search: Record<Key, any>) => useStoreSearch(baseStore, search), { initialProps: { a: '1', b: null, c: undefined } });
+    renderHook((search: Record<Key, any>) => useStoreBindRouter(baseStore, search), { initialProps: { a: '1', b: null, c: undefined } });
     expect(baseStore.values.a).toBe('1');
     expect(baseStore.values.b).toBe(null);
     expect(baseStore.values.c).toBe(undefined);
@@ -39,21 +39,21 @@ describe('useStoreSearch', () => {
 
   test('isRunNow', () => {
     baseStore.isRunNow = true;
-    renderHook((search: string) => useStoreSearch(baseStore, search), { initialProps: '?a=a' });
+    renderHook((search: string) => useStoreBindRouter(baseStore, search), { initialProps: '?a=a' });
     expect(baseStore.values.a).toBe('');
   });
 
-  test('isRunNow isBindSearch', () => {
-    baseStore.isBindSearch = true;
+  test('isRunNow isBindRouter', () => {
+    baseStore.isBindRouter = true;
     baseStore.isRunNow = true;
-    renderHook((search: string) => useStoreSearch(baseStore, search), { initialProps: '?a=a' });
+    renderHook((search: string) => useStoreBindRouter(baseStore, search), { initialProps: '?a=a' });
     expect(baseStore.values.a).toBe('a');
   });
 
   test('listStore', () => {
     const listStore = new ListStore({ defaultValues: { a: '' }, api: {}, apiExecutor });
     expect(apiExecutor).not.toBeCalled();
-    const { rerender } = renderHook((search: string) => useStoreSearch(listStore, search), { initialProps: '?a=a' });
+    const { rerender } = renderHook((search: string) => useStoreBindRouter(listStore, search), { initialProps: '?a=a' });
     expect(apiExecutor).toBeCalledWith({ params: { a: 'a', page: 1, pageSize: 20 } });
     expect(listStore.values.a).toEqual('a');
     rerender('?a=a2');
@@ -67,7 +67,7 @@ describe('useStoreSearch', () => {
     const apiExecutor = jest.fn(() => Promise.resolve({ code: 0, msg: '', data: {} }));
     const listStore = new ListStore({ defaultValues: { a: '' }, isRunNow: false, api: {}, apiExecutor });
     expect(apiExecutor).not.toBeCalled();
-    const { rerender } = renderHook((search: string) => useStoreSearch(listStore, search), { initialProps: '?a=a' });
+    const { rerender } = renderHook((search: string) => useStoreBindRouter(listStore, search), { initialProps: '?a=a' });
     expect(listStore.values.a).toEqual('a');
     expect(apiExecutor).not.toBeCalled();
     rerender('?a=a2');
@@ -81,7 +81,7 @@ describe('useStoreSearch', () => {
   test('listStore default not empty', () => {
     const apiExecutor = jest.fn(() => Promise.resolve({ code: 0, msg: '', data: {} }));
     const listStore = new ListStore({ defaultValues: { a: 'a', empty: '' }, isRunNow: false, api: {}, apiExecutor });
-    const { rerender } = renderHook((search: string) => useStoreSearch(listStore, search), { initialProps: '' });
+    const { rerender } = renderHook((search: string) => useStoreBindRouter(listStore, search), { initialProps: '' });
     expect(listStore.values.a).toEqual('a');
     expect(apiExecutor).not.toBeCalled();
     rerender('?a=');
@@ -97,7 +97,7 @@ describe('useStoreSearch', () => {
     const apiExecutor = jest.fn(() => Promise.resolve({ code: 0, msg: '', data: {} }));
     const listStore = new ListStore({ defaultValues: { a: '' }, isRunNow: false, api: {}, apiExecutor });
     expect(apiExecutor).not.toBeCalled();
-    const { rerender } = renderHook((search: string) => useStoreSearch(listStore, search), { initialProps: '' });
+    const { rerender } = renderHook((search: string) => useStoreBindRouter(listStore, search), { initialProps: '' });
     expect(listStore.values.a).toEqual('');
     expect(apiExecutor).not.toBeCalled();
     rerender('');

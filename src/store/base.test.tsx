@@ -10,7 +10,7 @@ describe('BaseStore', () => {
   test('df', () => {
     const dfStore = new BaseStore();
     expect(dfStore.isFilterEmptyAtRun).toBeFalsy();
-    expect(dfStore.isBindSearch).toBeFalsy();
+    expect(dfStore.isBindRouter).toBeFalsy();
     expect(dfStore.isRunNow).toBeFalsy();
     expect(dfStore.dictConfig).toEqual([]);
     expect(dfStore.fieldsConfig).toEqual({});
@@ -25,17 +25,17 @@ describe('BaseStore', () => {
     expect(fn.mock.calls.length).toBe(1);
     new BaseStore({ api: fn, isRunNow: false });
     expect(fn.mock.calls.length).toBe(1);
-    new BaseStore({ api: fn, isRunNow: true, isBindSearch: true });
+    new BaseStore({ api: fn, isRunNow: true, isBindRouter: true });
     expect(fn.mock.calls.length).toBe(1);
-    new BaseStore({ api: fn, isRunNow: true, isBindSearch: false });
+    new BaseStore({ api: fn, isRunNow: true, isBindRouter: false });
     expect(fn.mock.calls.length).toBe(2);
-    new BaseStore({ api: fn, isRunNow: false, isBindSearch: true });
+    new BaseStore({ api: fn, isRunNow: false, isBindRouter: true });
     expect(fn.mock.calls.length).toBe(2);
-    new BaseStore({ api: fn, isRunNow: false, isBindSearch: false });
+    new BaseStore({ api: fn, isRunNow: false, isBindRouter: false });
     expect(fn.mock.calls.length).toBe(2);
-    new BaseStore({ api: fn, isBindSearch: true });
+    new BaseStore({ api: fn, isBindRouter: true });
     expect(fn.mock.calls.length).toBe(2);
-    new BaseStore({ api: fn, isBindSearch: false });
+    new BaseStore({ api: fn, isBindRouter: false });
     expect(fn.mock.calls.length).toBe(2);
   });
 
@@ -129,24 +129,24 @@ describe('BaseStore', () => {
     expect(store.values).toEqual({ id: 2, name: '', type: 't1' });
   });
 
-  test('setValuesBySearch', () => {
+  test('setValuesByRouter', () => {
     store.fieldsConfig = { id: { type: 'number' } };
-    store.setValuesBySearch('?name=name&xxx=xxx&id=2');
+    store.setValuesByRouter('?name=name&xxx=xxx&id=2');
     expect(store.values).toEqual({ id: 2, name: 'name', type: 't1' });
 
-    store.setValuesBySearch({ name: 'name1', id: '3' });
+    store.setValuesByRouter({ name: 'name1', id: '3' });
     expect(store.values).toEqual({ id: 3, name: 'name1', type: 't1' });
 
-    store.setValuesBySearch({ id: 4 });
+    store.setValuesByRouter({ id: 4 });
     expect(store.values).toEqual({ id: 4, name: '', type: 't1' });
 
-    store.setValuesBySearch({ name: 'name2' }, 'part');
+    store.setValuesByRouter({ name: 'name2' }, {}, 'part');
     expect(store.values).toEqual({ id: 4, name: 'name2', type: 't1' });
 
-    store.setValuesBySearch({ name: 'name2' });
+    store.setValuesByRouter({ name: 'name2' });
     expect(store.values).toEqual({ id: 1, name: 'name2', type: 't1' });
 
-    store.setValuesBySearch('?name=name&xxx=xxx&id=2');
+    store.setValuesByRouter('?name=name&xxx=xxx&id=2');
   });
 
   test('getURLSearch', () => {

@@ -25,7 +25,7 @@ const { computed } = observable;
 
 export class BaseStore<V extends object = IStoreValues, R extends object = any> {
   isFilterEmptyAtRun = false;
-  isBindSearch = false;
+  isBindRouter = false;
   isRunNow = false;
   dictConfig: IStoreDictConfig<V> = [];
   fieldsConfig: IFieldsConfig<V> = Object({});
@@ -50,7 +50,7 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
       api,
       isFilterEmptyAtRun = false,
       defaultValues = Object({}),
-      isBindSearch = false,
+      isBindRouter = false,
       isRunNow = false,
       dictConfig = [],
       fieldsConfig = Object({}),
@@ -70,7 +70,7 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
     this.api = api;
     this.isRunNow = isRunNow;
     this.isFilterEmptyAtRun = isFilterEmptyAtRun;
-    this.isBindSearch = isBindSearch;
+    this.isBindRouter = isBindRouter;
 
     this.form = form;
 
@@ -88,7 +88,7 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
       resetValues: action,
       resetValuesByFields: action,
       setValuesByField: action,
-      setValuesBySearch: action,
+      setValuesByRouter: action,
 
       setDict: action,
       setDictByField: action,
@@ -104,7 +104,7 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
       ...defineConfig,
     });
 
-    isRunNow && !isBindSearch && this.runAPI();
+    isRunNow && !isBindRouter && this.runAPI();
   }
 
   get schemaDefinitions() {
@@ -145,7 +145,7 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
   setValuesByField = (field: IField<V>, value: any) => set(this.values, field, value);
 
   // type all undefined 则填默认值  "" 则填空字符串
-  setValuesBySearch = (search: string | Partial<Record<Key, any>>, type: 'all' | 'part' = 'all') => {
+  setValuesByRouter = (search: string | Partial<Record<Key, any>>, params?: Record<Key, any>, type: 'all' | 'part' = 'all') => {
     let newValues: any = {};
     if (typeof search === 'string') {
       const searchParams = new URLSearchParams(search);
@@ -156,6 +156,9 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
     }
     if (typeof search === 'object') {
       Object.entries(search).forEach(([key, value]) => newValues[key] = getValueBySearchParam(value, this.fieldsConfig[key], this.defaultValues[key]));
+    }
+    if (!judgeIsEmpty(params) && typeof params === 'object') {
+      newValues = { ...newValues, ...params };
     }
 
     type === 'all' && (newValues = { ...this.getDefaultValues(), ...newValues });
@@ -217,7 +220,7 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
   };
 
   runAPIDataBySearch = async (search: string | Partial<Record<Key, any>>) => {
-    this.setValuesBySearch(search);
+    this.setValuesByRouter(search);
     return this.runAPI();
   };
 
@@ -242,7 +245,7 @@ export type IBaseStoreConfig<V extends object = IStoreValues, R extends object =
   fieldsConfig?: IFieldsConfig<V>;
   transform?: IStoreTransform
   isFilterEmptyAtRun?: boolean;
-  isBindSearch?: boolean;
+  isBindRouter?: boolean;
   isRunNow?: boolean,
   apiExecutor?: IStoreHTTPRequest;
   defineConfig?: Record<Key, any>;
