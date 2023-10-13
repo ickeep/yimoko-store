@@ -6,12 +6,10 @@ export const AddPageDemo = () => (
     storeConfig={{
       fieldsConfig: {},
       api: {
-        add: { method: 'post', url: '/api/add' },
+        add: { method: 'get', url: '/api/add.json' },
       },
     }}
-    store={{
-      defaultValues: { name: '' },
-    }}
+    store={{ defaultValues: { name: '' } }}
     schema={{
       type: 'object',
       properties: {
