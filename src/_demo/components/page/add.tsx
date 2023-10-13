@@ -9,7 +9,11 @@ export const AddPageDemo = () => (
         add: { method: 'get', url: '/api/add.json' },
       },
     }}
-    store={{ defaultValues: { name: '' } }}
+    store={{
+      defaultValues: { name: '' },
+      // 查看 loading 状态
+      api: () => new Promise(resolve => setTimeout(() => resolve({ code: 0, msg: '添加成功' }), 1000)),
+    }}
     schema={{
       type: 'object',
       properties: {
@@ -36,6 +40,7 @@ export const AddPageDemo = () => (
             type: 'primary',
             children: '提交',
             onClick: '{{curStore.runAPI}}',
+            loading: '{{curStore.loading}}',
           },
         },
       },
