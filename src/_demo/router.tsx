@@ -7,6 +7,8 @@ import { AddPageDemo } from './components/page/add';
 
 import { DetailPageDemo } from './components/page/detail';
 
+import { EditPageDemo } from './components/page/edit';
+
 import { IndexDemo } from '.';
 
 export const ROUTES_CONF: Array<IRouteConf> = [
@@ -18,7 +20,7 @@ export const ROUTES_CONF: Array<IRouteConf> = [
         path: 'page/', name: '页面', children: [
           { path: 'add', name: '添加', component: AddPageDemo },
           { path: 'detail', name: '详情', component: DetailPageDemo },
-          { path: 'edit', name: '编辑' },
+          { path: 'edit', name: '编辑', component: EditPageDemo },
           { path: 'list', name: '列表' },
         ],
       },
