@@ -118,7 +118,7 @@ export const ArrayRender: <T>(props: IArrayRenderProps<T>) => ReactElement<any, 
       <ArrayBase disabled={field.disabled} isForceUpdate={true}  >
         {curData.map((record, index) => (
           <RecordScope getRecord={() => record} getIndex={() => index} key={index}>
-            {items.map((item, j) => <RecursionField key={j} name={index} schema={item} />)}
+            {items.map((item, j) => <RecursionField key={j} name={`${index}.${item.name}`} schema={item} />)}
           </RecordScope>
         ))}
         {curChildren}

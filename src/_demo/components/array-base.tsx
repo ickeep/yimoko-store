@@ -249,6 +249,20 @@ export const ArrayBaseDemo = () => {
               },
             },
           },
+          ArrayRender: {
+            type: 'void',
+            'x-component': 'div',
+            properties: {
+              array: {
+                type: 'array',
+                'x-component': 'ArrayRender',
+                items: [
+                  { name: 'name', title: '名称', type: 'string', 'x-component': 'Input' },
+                ],
+              },
+            },
+
+          },
         },
       }} />
   );
