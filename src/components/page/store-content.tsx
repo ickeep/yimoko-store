@@ -12,11 +12,11 @@ export interface StorePageContentProps {
   skeleton?: Record<Key, any> | false
   isReturnIndex?: boolean
   isAgain?: boolean
-  loadProps?: Record<Key, any> | boolean
+  load?: Record<Key, any> | boolean
 }
 
 export const StorePageContent = observer((props: StorePageContentProps) => {
-  const { store, children, skeleton, isReturnIndex, isAgain = true, loadProps = false } = props;
+  const { store, children, skeleton, isReturnIndex, isAgain = true, load = false } = props;
   const components = useConfigComponents();
   const scope = useExpressionScope();
   const pageComponents = scope?.components;
@@ -37,10 +37,10 @@ export const StorePageContent = observer((props: StorePageContentProps) => {
   const curOnAgain = useMemo(() => (isAgain ? runAPI : undefined), [isAgain, runAPI]);
   const isSkeleton = useMemo(() => loading && judgeIsEmpty(response) && skeleton !== false, [loading, response, skeleton]);
   const curChildren = useMemo(
-    () => (loadProps
-      ? <Loading {...(typeof loadProps === 'object' ? loadProps : {})} loading={loading}>{children}</Loading>
+    () => (load
+      ? <Loading {...(typeof load === 'object' ? load : {})} loading={loading}>{children}</Loading>
       : children)
-    , [loadProps, Loading, loading, children],
+    , [load, Loading, loading, children],
   );
 
   if (!curStore || judgeIsSuccess(response)) {

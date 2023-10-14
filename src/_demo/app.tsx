@@ -5,13 +5,20 @@ import zhCN from 'antd/lib/locale/zh_CN';
 
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { ConfigStore, ConfigStoreProvider, INotifier, SchemaComponentsProvider, SchemaFieldProvider, httpRequest, judgeValidKey, withValueChildren } from '../library';
+import {
+  ArrayRender,
+  ConfigStore, ConfigStoreProvider, INotifier,
+  RedirectListData, SchemaComponentsProvider, SchemaFieldProvider, StorePageContent, httpRequest, judgeValidKey, withValueChildren,
+} from '../library';
 
 import { ErrorContent } from './error-content';
 import { ROUTER_MENUS, Router } from './router';
 
 
 const components = {
+  StorePageContent,
+  RedirectListData,
+  ArrayRender,
   Typography,
   Title: withValueChildren(Typography.Title),
   Input: (props: any) => <Input {...props} onChange={e => props?.onChange?.(e.target.value, e)} />,
@@ -67,7 +74,7 @@ export const configStore: ConfigStore<typeof defaultConfig> = new ConfigStore(
     apiExecutor: httpRequest,
     useRouter,
     components: {
-      Loading: Spin,
+      Loading: ({ loading, ...rest }) => <Spin {...rest} spinning={loading} />,
       Skeleton,
       ErrorContent,
     },

@@ -1,9 +1,10 @@
 import { ArrayField } from '@formily/core';
-import { useField, useFieldSchema, Schema } from '@formily/react';
+import { useField, useFieldSchema, Schema, RecursionField, RecordsScope, RecordScope, observer } from '@formily/react';
 import { clone, omitBy } from 'lodash-es';
-import { Key, createContext, useContext, useMemo } from 'react';
+import { Key, ReactElement, createContext, useContext, useMemo } from 'react';
 
-import { judgeIsEmpty } from '../library';
+import { useSchemaItems } from '../hooks/use-schema-items';
+import { judgeIsEmpty } from '../tools/tool';
 
 const ArrayBaseContext = createContext<IArrayBaseContext>(null as any);
 
@@ -83,6 +84,48 @@ export const ArrayBase: React.FC<React.PropsWithChildren<IArrayBaseProps>> = (pr
     </ArrayBaseContext.Provider>
   );
 };
+
+export type IArrayRenderProps<T = any> = React.PropsWithChildren<{
+  value?: T[]
+  data?: T[]
+  isRenderProperties?: boolean
+}>;
+
+export const ArrayRender: <T>(props: IArrayRenderProps<T>) => ReactElement<any, any> | null = observer((props) => {
+  const { value, data, children, isRenderProperties } = props;
+  const curData = data ?? value ?? [];
+
+  const items = useSchemaItems();
+  const field = useField();
+  const schema = useFieldSchema();
+
+  const curChildren = useMemo(() => {
+    if (children !== undefined) {
+      return children;
+    }
+    if (!isRenderProperties || judgeIsEmpty(schema.properties)) {
+      return null;
+    }
+    // 默认 schema type 为 array 不渲染 properties, 表格这里特意做加强
+    return <RecursionField name={schema.name} onlyRenderProperties schema={{ type: 'void', properties: schema.properties }} />;
+  }, [children, isRenderProperties, schema.name, schema.properties]);
+
+  if (judgeIsEmpty(items)) {
+    return <>{curChildren}</>;
+  }
+  return (
+    <RecordsScope getRecords={() => curData}>
+      <ArrayBase disabled={field.disabled} isForceUpdate={true}  >
+        {curData.map((record, index) => (
+          <RecordScope getRecord={() => record} getIndex={() => index} key={index}>
+            {items.map((item, j) => <RecursionField key={j} name={index} schema={item} />)}
+          </RecordScope>
+        ))}
+        {curChildren}
+      </ArrayBase>
+    </RecordsScope>
+  );
+});
 
 export const useArray = () => useContext(ArrayBaseContext);
 

@@ -15,10 +15,7 @@ export const EditPageDemo = () => (
     //   // api: () => new Promise(resolve => setTimeout(() => resolve({ code: 0, msg: '编辑成功', data: { name: '张三' } }), 1000)),
     //   // api: () => new Promise(resolve => setTimeout(() => resolve({ code: 500, msg: '服务器出错了' }), 1000)),
     // }}
-    store={{
-      defaultValues: { name: '' },
-
-    }}
+    store={{ defaultValues: { name: '' } }}
     schema={{
       type: 'object',
       properties: {
