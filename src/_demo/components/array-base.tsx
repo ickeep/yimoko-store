@@ -35,11 +35,10 @@ const ItemCopy = withArrayItemComponent(Button, { onCopy: 'onClick' }, { type: '
 
 const TestTable = observable((props: TableProps<any> & { value?: TableProps<any>['dataSource'] }) => {
   const { columns = [], dataSource, rowKey, value, children, ...rest } = props;
-  // const items = useSchemaItems();
   const field = useField();
   const schema = useFieldSchema();
+  const { items } = schema;
   const curDataSource = (dataSource ?? value);
-
   const curChildren = useMemo(() => {
     if (children !== undefined) {
       return children;
@@ -68,32 +67,48 @@ const TestTable = observable((props: TableProps<any> & { value?: TableProps<any>
   }, [curDataSource])();
 
   const curColumns = useMemo(
-    () =>
-      // const itemsColumns = items.map((item) => {
-      //   const baseProps = {
-      //     dataIndex: item.name,
-      //     title: item.title,
-      //     ...getItemPropsBySchema(item, 'Column'),
-      //   };
-      //   if (judgeIsEmpty(item['x-component'])) {
-      //     return baseProps;
-      //   }
-      //   return ({
-      //     ...baseProps,
-      //     render: (v: any, r: any) => {
-      //       const dataIndex = getRecordIndex(r);
-      //       const { children } = getItemPropsBySchema(item, 'Column', dataIndex);
-      //       return (
-      //         <RecordScope getRecord={() => r ?? {}} getIndex={() => dataIndex}>
-      //           {children}
-      //         </RecordScope>
-      //       );
-      //     },
-      //   });
-      // });
+    () => {
+      if (judgeIsEmpty(items)) {
+        return columns;
+      }
+      const itemArr = Array.isArray(items) ? items : [items];
+      const itemsColumns: TableProps<any>['columns'] = [];
 
-      [...columns]
-    , [columns, getRecordIndex],
+      const useColumns = itemArr.reduce((itemsColumns, item) => {
+        console.log('item xxx', item);
+
+
+        return itemsColumns;
+      }, itemsColumns);
+      console.log('useColumns', useColumns);
+
+      return [...columns, ...useColumns];
+    }
+    // const itemsColumns = items.map((item) => {
+    //   const baseProps = {
+    //     dataIndex: item.name,
+    //     title: item.title,
+    //     ...getItemPropsBySchema(item, 'Column'),
+    //   };
+    //   if (judgeIsEmpty(item['x-component'])) {
+    //     return baseProps;
+    //   }
+    //   return ({
+    //     ...baseProps,
+    //     render: (v: any, r: any) => {
+    //       const dataIndex = getRecordIndex(r);
+    //       const { children } = getItemPropsBySchema(item, 'Column', dataIndex);
+    //       return (
+    //         <RecordScope getRecord={() => r ?? {}} getIndex={() => dataIndex}>
+    //           {children}
+    //         </RecordScope>
+    //       );
+    //     },
+    //   });
+    // });
+
+
+    , [columns, items],
   );
 
   return (
@@ -144,46 +159,52 @@ export const ArrayBaseDemo = () => {
             },
             items: [
               {
-                name: 'age', title: '年龄', type: 'number', 'x-component': 'ArgOut',
-                'x-component-props': {
-                  val: '{{$record.age}}',
-                },
-              },
-              {
-                name: 'name',
-                title: '操作',
-                type: 'void',
-                'x-component': 'div',
+                type: 'object',
                 properties: {
-                  ItemMoveUp: {
-                    'x-component': 'ItemMoveUp',
+                  age: {
+                    type: 'number',
+                    title: '年龄',
+                    'x-component': 'ArgOut',
                     'x-component-props': {
-                      onClick: (...args: any) => {
-                        console.log('args', args);
-                      },
+                      val: '{{$record.age}}',
                     },
                   },
-                  ItemMoveDown: {
-                    'x-component': 'ItemMoveDown',
-                    'x-component-props': {
-                      onClick: (...args: any) => {
-                        console.log('args', args);
+                  name: {
+                    title: '操作',
+                    type: 'void',
+                    'x-component': 'div',
+                    properties: {
+                      ItemMoveUp: {
+                        'x-component': 'ItemMoveUp',
+                        'x-component-props': {
+                          onClick: (...args: any) => {
+                            console.log('args', args);
+                          },
+                        },
                       },
-                    },
-                  },
-                  ItemRemove: {
-                    'x-component': 'ItemRemove',
-                    'x-component-props': {
-                      onClick: (...args: any) => {
-                        console.log('args', args);
+                      ItemMoveDown: {
+                        'x-component': 'ItemMoveDown',
+                        'x-component-props': {
+                          onClick: (...args: any) => {
+                            console.log('args', args);
+                          },
+                        },
                       },
-                    },
-                  },
-                  ItemCopy: {
-                    'x-component': 'ItemCopy',
-                    'x-component-props': {
-                      onClick: (...args: any) => {
-                        console.log('args', args);
+                      ItemRemove: {
+                        'x-component': 'ItemRemove',
+                        'x-component-props': {
+                          onClick: (...args: any) => {
+                            console.log('args', args);
+                          },
+                        },
+                      },
+                      ItemCopy: {
+                        'x-component': 'ItemCopy',
+                        'x-component-props': {
+                          onClick: (...args: any) => {
+                            console.log('args', args);
+                          },
+                        },
                       },
                     },
                   },
