@@ -4,14 +4,14 @@ import { render, screen } from '@testing-library/react';
 
 import { SchemaFieldProvider } from '../context/schema-field';
 
-import { DataItems } from './data-items';
+// import { DataItems } from './data-items';
 import { SchemaPage } from './schema-page';
 
 describe('useSchemaItems', () => {
   const RenderItems = ({ schema, values }: { schema?: ISchema, values?: any }) => {
     const model = createForm({ values });
     const components = {
-      DataItems,
+      // DataItems,
       Text: ({ value }: { value: any }) => {
         const scope = useExpressionScope();
         return <>

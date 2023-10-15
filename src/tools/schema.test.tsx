@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 
 import { SchemaPage } from '../components/schema-page';
 import { SchemaFieldProvider } from '../context/schema-field';
-import { useSchemaItems } from '../hooks/use-schema-items';
 
 import { getItemPropsBySchema } from './schema';
 

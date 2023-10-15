@@ -49,6 +49,7 @@
       "/src/_demo"
     ],
     "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs",
       "^lodash-es$": "lodash"
     }
   },

@@ -3,7 +3,6 @@ import { useField, useFieldSchema, Schema, RecursionField, RecordsScope, RecordS
 import { clone, omitBy } from 'lodash-es';
 import { Key, ReactElement, createContext, useContext, useMemo } from 'react';
 
-import { useSchemaItems } from '../hooks/use-schema-items';
 import { judgeIsEmpty } from '../tools/tool';
 
 const ArrayBaseContext = createContext<IArrayBaseContext>(null as any);
@@ -11,7 +10,7 @@ const ArrayBaseContext = createContext<IArrayBaseContext>(null as any);
 export const ArrayBase: React.FC<React.PropsWithChildren<IArrayBaseProps>> = (props) => {
   const field = useField<ArrayField>();
   const schema = useFieldSchema();
-  const disabled = props.disabled ?? field.disabled;
+  const disabled = props?.disabled ?? field?.disabled;
   const isForceUpdate = props.isForceUpdate ?? false;
 
   const newProps: Required<IArrayBaseProps> = useMemo(() => {
@@ -85,19 +84,14 @@ export const ArrayBase: React.FC<React.PropsWithChildren<IArrayBaseProps>> = (pr
   );
 };
 
-export type IArrayRenderProps<T = any> = React.PropsWithChildren<{
-  value?: T[]
-  data?: T[]
-  isRenderProperties?: boolean
-}>;
 
 export const ArrayRender: <T>(props: IArrayRenderProps<T>) => ReactElement<any, any> | null = observer((props) => {
   const { value, data, children, isRenderProperties } = props;
   const curData = data ?? value ?? [];
 
-  const items = useSchemaItems();
   const field = useField();
   const schema = useFieldSchema();
+  const { items } = schema ?? {};
 
   const curChildren = useMemo(() => {
     if (children !== undefined) {
@@ -118,7 +112,7 @@ export const ArrayRender: <T>(props: IArrayRenderProps<T>) => ReactElement<any, 
       <ArrayBase disabled={field.disabled} isForceUpdate={true}  >
         {curData.map((record, index) => (
           <RecordScope getRecord={() => record} getIndex={() => index} key={index}>
-            {items.map((item, j) => <RecursionField key={j} name={`${index}.${item.name}`} schema={item} />)}
+            <RecursionField name={index} schema={Array.isArray(items) ? (items[index] ?? items[0]) : items} />
           </RecordScope>
         ))}
         {curChildren}
@@ -280,3 +274,8 @@ export interface IArrayBaseProps {
   onMoveDown?: (index: number) => Promise<void>;
 }
 
+export type IArrayRenderProps<T = any> = React.PropsWithChildren<{
+  value?: T[]
+  data?: T[]
+  isRenderProperties?: boolean
+}>;

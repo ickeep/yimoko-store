@@ -4,7 +4,7 @@ import { observable } from '@formily/reactive';
 import { Button, Table, TableProps } from 'antd';
 import { useCallback, useMemo } from 'react';
 
-import { getItemPropsBySchema, judgeIsEmpty, useSchemaItems, useStore, ArrayBase, withArrayComponent, withArrayItemComponent, StorePage } from '../../library';
+import { getItemPropsBySchema, judgeIsEmpty, useStore, ArrayBase, withArrayComponent, withArrayItemComponent, StorePage } from '../../library';
 
 const ArgOut = (props: any) => {
   const { value, val } = props;
@@ -35,7 +35,7 @@ const ItemCopy = withArrayItemComponent(Button, { onCopy: 'onClick' }, { type: '
 
 const TestTable = observable((props: TableProps<any> & { value?: TableProps<any>['dataSource'] }) => {
   const { columns = [], dataSource, rowKey, value, children, ...rest } = props;
-  const items = useSchemaItems();
+  // const items = useSchemaItems();
   const field = useField();
   const schema = useFieldSchema();
   const curDataSource = (dataSource ?? value);
@@ -67,32 +67,34 @@ const TestTable = observable((props: TableProps<any> & { value?: TableProps<any>
     };
   }, [curDataSource])();
 
-  const curColumns = useMemo(() => {
-    const itemsColumns = items.map((item) => {
-      const baseProps = {
-        dataIndex: item.name,
-        title: item.title,
-        ...getItemPropsBySchema(item, 'Column'),
-      };
-      if (judgeIsEmpty(item['x-component'])) {
-        return baseProps;
-      }
-      return ({
-        ...baseProps,
-        render: (v: any, r: any) => {
-          const dataIndex = getRecordIndex(r);
-          const { children } = getItemPropsBySchema(item, 'Column', dataIndex);
-          return (
-            <RecordScope getRecord={() => r ?? {}} getIndex={() => dataIndex}>
-              {children}
-            </RecordScope>
-          );
-        },
-      });
-    });
+  const curColumns = useMemo(
+    () =>
+      // const itemsColumns = items.map((item) => {
+      //   const baseProps = {
+      //     dataIndex: item.name,
+      //     title: item.title,
+      //     ...getItemPropsBySchema(item, 'Column'),
+      //   };
+      //   if (judgeIsEmpty(item['x-component'])) {
+      //     return baseProps;
+      //   }
+      //   return ({
+      //     ...baseProps,
+      //     render: (v: any, r: any) => {
+      //       const dataIndex = getRecordIndex(r);
+      //       const { children } = getItemPropsBySchema(item, 'Column', dataIndex);
+      //       return (
+      //         <RecordScope getRecord={() => r ?? {}} getIndex={() => dataIndex}>
+      //           {children}
+      //         </RecordScope>
+      //       );
+      //     },
+      //   });
+      // });
 
-    return [...columns, ...itemsColumns];
-  }, [columns, getRecordIndex, items]);
+      [...columns]
+    , [columns, getRecordIndex],
+  );
 
   return (
     // @ts-ignore
@@ -256,12 +258,17 @@ export const ArrayBaseDemo = () => {
               array: {
                 type: 'array',
                 'x-component': 'ArrayRender',
-                items: [
-                  { name: 'name', title: '名称', type: 'string', 'x-component': 'Input' },
-                ],
+                items: {
+                  type: 'object',
+                  properties: {
+                    name: {
+                      type: 'string',
+                      'x-component': 'Input',
+                    },
+                  },
+                },
               },
             },
-
           },
         },
       }} />
