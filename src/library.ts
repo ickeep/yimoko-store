@@ -6,7 +6,6 @@ export * from './components/page/list';
 export * from './components/page/store-content';
 export * from './components/page/store';
 export * from './components/array-base';
-export * from './components/data-items';
 export * from './components/page/store';
 export * from './components/redirect-list-data';
 export * from './components/redirect-values';

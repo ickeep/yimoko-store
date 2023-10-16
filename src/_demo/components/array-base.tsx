@@ -1,5 +1,5 @@
 
-import { RecordScope, RecordsScope, RecursionField, useField, useFieldSchema } from '@formily/react';
+import { RecordScope, RecordsScope, RecursionField, Schema, useField, useFieldSchema } from '@formily/react';
 import { observable } from '@formily/reactive';
 import { Button, Table, TableProps } from 'antd';
 import { useCallback, useMemo } from 'react';
@@ -32,6 +32,45 @@ const ItemMoveDown = withArrayItemComponent(Button, { onMoveDown: 'onClick' }, {
 const ItemRemove = withArrayItemComponent(Button, { onRemove: 'onClick' }, { type: 'text', children: 'ItemRemove' });
 
 const ItemCopy = withArrayItemComponent(Button, { onCopy: 'onClick' }, { type: 'text', children: 'ItemCopy' });
+
+// isDecoratorColumn 判断是否是 列，如果是则添加 children，默认第一层不判断，统一是 列
+const schemaToColumns = (schema: Schema, getRecordIndex: any, isDecoratorColumn = false) => {
+  const columns: TableProps<any>['columns'] = [];
+  schema.reduceProperties((columns, item) => {
+    if (isDecoratorColumn && item['x-decorator'] !== 'Column') {
+      return columns;
+    }
+    const baseProps: typeof columns[number] = {
+      dataIndex: item.name,
+      title: item.title,
+      ...getItemPropsBySchema(item, 'Column'),
+    };
+
+    if (!judgeIsEmpty(item['x-component'])) {
+      baseProps.render = (v: any, r: any) => {
+        const dataIndex = getRecordIndex(r);
+        const { children } = getItemPropsBySchema(item, 'Column', dataIndex);
+        return (
+          <RecordScope getRecord={() => r ?? {}} getIndex={() => dataIndex}>
+            {children}
+          </RecordScope>
+        );
+      };
+    }
+    // 判断是否有子节点 是否是 Column 如果是刚添加 children
+    if (!judgeIsEmpty(item.properties)) {
+      const children = schemaToColumns(item, getRecordIndex, true);
+      if (!judgeIsEmpty(children)) {
+        // @ts-ignore
+        baseProps.children = schemaToColumns(item, getRecordIndex);
+      }
+    }
+    columns.push(baseProps);
+    return columns;
+  }, columns);
+
+  return columns;
+};
 
 const TestTable = observable((props: TableProps<any> & { value?: TableProps<any>['dataSource'] }) => {
   const { columns = [], dataSource, rowKey, value, children, ...rest } = props;
@@ -74,41 +113,13 @@ const TestTable = observable((props: TableProps<any> & { value?: TableProps<any>
       const itemArr = Array.isArray(items) ? items : [items];
       const itemsColumns: TableProps<any>['columns'] = [];
 
-      const useColumns = itemArr.reduce((itemsColumns, item) => {
-        console.log('item xxx', item);
+      itemArr.forEach((item) => {
+        itemsColumns.push(...schemaToColumns(item, getRecordIndex));
+      });
 
-
-        return itemsColumns;
-      }, itemsColumns);
-      console.log('useColumns', useColumns);
-
-      return [...columns, ...useColumns];
+      return [...columns, ...itemsColumns];
     }
-    // const itemsColumns = items.map((item) => {
-    //   const baseProps = {
-    //     dataIndex: item.name,
-    //     title: item.title,
-    //     ...getItemPropsBySchema(item, 'Column'),
-    //   };
-    //   if (judgeIsEmpty(item['x-component'])) {
-    //     return baseProps;
-    //   }
-    //   return ({
-    //     ...baseProps,
-    //     render: (v: any, r: any) => {
-    //       const dataIndex = getRecordIndex(r);
-    //       const { children } = getItemPropsBySchema(item, 'Column', dataIndex);
-    //       return (
-    //         <RecordScope getRecord={() => r ?? {}} getIndex={() => dataIndex}>
-    //           {children}
-    //         </RecordScope>
-    //       );
-    //     },
-    //   });
-    // });
-
-
-    , [columns, items],
+    , [columns, getRecordIndex, items],
   );
 
   return (
@@ -128,6 +139,9 @@ const TestTable = observable((props: TableProps<any> & { value?: TableProps<any>
 export const ArrayBaseDemo = () => {
   const store = useStore({
     defaultValues: {
+      strArray: ['keep', 'jf', 'jf x'],
+      numArray: [1, 2, 3],
+      boolArray: [true, false, true],
       array: [
         { name: 'keep', age: 20 },
         { name: 'jf', age: 22 },
@@ -143,6 +157,40 @@ export const ArrayBaseDemo = () => {
       schema={{
         type: 'object',
         properties: {
+          strArray: {
+            type: 'array',
+            'x-component': 'ArrayRender',
+            items: {
+              type: 'string',
+              'x-decorator': 'FormItem',
+              'x-decorator-props': {
+                label: '字符串',
+              },
+              'x-component': 'Input',
+            },
+          },
+          numArray: {
+            type: 'array',
+            'x-component': 'ArrayRender',
+            items: {
+              type: 'number',
+              'x-decorator': 'FormItem',
+              'x-decorator-props': {
+                label: '数字',
+              },
+              'x-component': 'InputNumber',
+            },
+          },
+          boolArray: {
+            type: 'array',
+            'x-component': 'ArrayRender',
+            items: [
+              { type: 'boolean', 'x-component': 'Input' },
+              // 指定对应 index 如何渲染
+              { type: 'boolean', 'x-component': 'Switch' },
+              { type: 'boolean', 'x-component': 'Input' },
+            ],
+          },
           array: {
             type: 'array',
             'x-component': 'Table',
@@ -163,6 +211,7 @@ export const ArrayBaseDemo = () => {
                 properties: {
                   age: {
                     type: 'number',
+                    name: 'age xxx',
                     title: '年龄',
                     'x-component': 'ArgOut',
                     'x-component-props': {

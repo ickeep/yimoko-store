@@ -1,6 +1,6 @@
 import { MenuOutlined } from '@ant-design/icons';
 import { createSchemaField } from '@formily/react';
-import { FloatButton, Dropdown, ConfigProvider, notification, Spin, Skeleton, Input, Button, Typography } from 'antd';
+import { FloatButton, Dropdown, ConfigProvider, notification, Spin, Skeleton, Input, Button, Typography, Form, InputNumber, Switch } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -20,9 +20,12 @@ const components = {
   RedirectListData,
   ArrayRender,
   Typography,
+  FormItem: Form.Item,
   Title: withValueChildren(Typography.Title),
   Input: (props: any) => <Input {...props} onChange={e => props?.onChange?.(e.target.value, e)} />,
+  InputNumber,
   Button,
+  Switch: ({ value, ...rest }: any) => <Switch {...rest} checked={value} />,
 };
 
 const SchemaField = createSchemaField({ components });
