@@ -1,6 +1,6 @@
 import { observer } from '@formily/react';
 
-import { useStoreBindRouter } from '../hooks/use-store-search';
+import { useStoreBindRouter } from '../hooks/use-store-bind-router';
 import { IStore } from '../store';
 import { useRouter } from '../store/config';
 

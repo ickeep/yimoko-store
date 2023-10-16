@@ -7,7 +7,7 @@ import { IStore } from '../store';
 import { BaseStore } from '../store/base';
 import { ListStore } from '../store/list';
 
-import { useStoreBindRouter } from './use-store-search';
+import { useStoreBindRouter } from './use-store-bind-router';
 
 describe('useStoreBindRouter', () => {
   const apiExecutor = jest.fn(() => Promise.resolve({ code: 0, msg: '', data: '' }));

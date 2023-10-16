@@ -36,7 +36,7 @@ export * from './hooks/use-operate-store';
 export * from './hooks/use-options';
 export * from './hooks/use-schema-children';
 // export * from './hooks/use-schema-items';
-export * from './hooks/use-store-search';
+export * from './hooks/use-store-bind-router';
 export * from './hooks/use-store';
 
 export * from './store/utils/field';
