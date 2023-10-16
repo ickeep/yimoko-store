@@ -88,7 +88,6 @@ export const ArrayBase: React.FC<React.PropsWithChildren<IArrayBaseProps>> = (pr
 export const ArrayRender: <T>(props: IArrayRenderProps<T>) => ReactElement<any, any> | null = observer((props) => {
   const { value, data, children, isRenderProperties } = props;
   const curData = data ?? value ?? [];
-
   const field = useField();
   const schema = useFieldSchema();
   const { items } = schema ?? {};
@@ -140,7 +139,7 @@ export function withArrayComponent<T extends Object = Record<Key, any>, R = any>
     const { index = 0, toIndex = 0, items = [] } = arrayParams ?? {};
     const curProps = useMemo(() => {
       if (judgeIsEmpty(propsMapping)) {
-        return rest;
+        return omitBy(rest, v => v === undefined);
       }
       const valueKeys = Object.values(propsMapping);
       const cProps = omitBy(rest, (v, k) => !valueKeys.includes(k as any) || v === undefined);
@@ -207,7 +206,7 @@ export function withArrayItemComponent<T extends Object = Record<Key, any>>(
 
     const curProps = useMemo(() => {
       if (judgeIsEmpty(propsMapping)) {
-        return props;
+        return omitBy(props, v => v === undefined) as T;
       }
       const valueKeys = Object.values(propsMapping);
       const cProps = omitBy(props, (v, k) => !valueKeys.includes(k as any) || v === undefined);
@@ -278,4 +277,5 @@ export type IArrayRenderProps<T = any> = React.PropsWithChildren<{
   value?: T[]
   data?: T[]
   isRenderProperties?: boolean
+
 }>;
