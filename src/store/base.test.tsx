@@ -143,7 +143,7 @@ describe('BaseStore', () => {
     store.setValuesByRouter({ name: 'name2' }, {}, 'part');
     expect(store.values).toEqual({ id: 4, name: 'name2', type: 't1' });
 
-    store.setValuesByRouter({ name: 'name2' });
+    store.setValuesByRouter('', { name: 'name2' });
     expect(store.values).toEqual({ id: 1, name: 'name2', type: 't1' });
 
     store.setValuesByRouter('?name=name&xxx=xxx&id=2');
