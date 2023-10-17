@@ -84,9 +84,8 @@ export const ArrayBase: React.FC<React.PropsWithChildren<IArrayBaseProps>> = (pr
   );
 };
 
-
 export const ArrayRender: <T>(props: IArrayRenderProps<T>) => ReactElement<any, any> | null = observer((props) => {
-  const { value, data, children, isRenderProperties } = props;
+  const { value, data, children, isRenderProperties, disabled, ...rest } = props;
   const curData = data ?? value ?? [];
   const field = useField();
   const schema = useFieldSchema();
@@ -96,20 +95,17 @@ export const ArrayRender: <T>(props: IArrayRenderProps<T>) => ReactElement<any, 
     if (children !== undefined) {
       return children;
     }
-    if (!isRenderProperties || judgeIsEmpty(schema.properties)) {
+    if (!isRenderProperties || judgeIsEmpty(schema?.properties)) {
       return null;
     }
     // 默认 schema type 为 array 不渲染 properties, 表格这里特意做加强
-    return <RecursionField name={schema.name} onlyRenderProperties schema={{ type: 'void', properties: schema.properties }} />;
-  }, [children, isRenderProperties, schema.name, schema.properties]);
+    return <RecursionField name={schema?.name} onlyRenderProperties schema={{ type: 'void', properties: schema.properties }} />;
+  }, [children, isRenderProperties, schema?.name, schema?.properties]);
 
-  if (judgeIsEmpty(items)) {
-    return <>{curChildren}</>;
-  }
   return (
     <RecordsScope getRecords={() => curData}>
-      <ArrayBase disabled={field.disabled} isForceUpdate={true}  >
-        {curData.map((record, index) => (
+      <ArrayBase {...rest} disabled={disabled ?? field?.disabled}   >
+        {!judgeIsEmpty(items) && curData.map((record, index) => (
           <RecordScope getRecord={() => record} getIndex={() => index} key={index}>
             <RecursionField name={index} schema={Array.isArray(items) ? (items[index] ?? items[0]) : items} />
           </RecordScope>
@@ -142,7 +138,8 @@ export function withArrayComponent<T extends Object = Record<Key, any>, R = any>
         return omitBy(rest, v => v === undefined);
       }
       const valueKeys = Object.values(propsMapping);
-      const cProps = omitBy(rest, (v, k) => !valueKeys.includes(k as any) || v === undefined);
+      const cProps = omitBy(rest, (v, k) => (!valueKeys.includes(k as any)) || v === undefined);
+
       const emit = (key: keyof IPropsMapping, ...args: any[]) => {
         const name = propsMapping[key];
         name && (rest as any)?.[name]?.(...args);
@@ -277,5 +274,4 @@ export type IArrayRenderProps<T = any> = React.PropsWithChildren<{
   value?: T[]
   data?: T[]
   isRenderProperties?: boolean
-
-}>;
+} & IArrayBaseProps>;

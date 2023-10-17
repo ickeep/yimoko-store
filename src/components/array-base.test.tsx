@@ -12,6 +12,33 @@ describe('ArrayBase', () => {
     expect(document.body.textContent).toBe('array');
   });
 
+  test('ArrayRender', () => {
+    render(<ArrayRender >array</ArrayRender>);
+    expect(document.body.textContent).toBe('array');
+  });
+
+  test('render data', () => {
+    const store = new BaseStore({ defaultValues: {} });
+    render(<StorePage
+      components={{ ArrayRender, RenderValue }}
+      store={store}
+      schema={{
+        type: 'object',
+        properties: {
+          array: {
+            type: 'array',
+            'x-component': 'ArrayRender',
+            'x-component-props': { isRenderProperties: true, data: ['张三', '李四'] },
+            properties: {
+              content: { type: 'void', 'x-component': 'div', 'x-component-props': { children: '{{$records.join("-")}}' } },
+            },
+          },
+        },
+      }}
+    />);
+    expect(document.body.textContent).toBe('张三-李四');
+  });
+
   test('render str', () => {
     const store = new BaseStore({ defaultValues: { array: ['张三', '李四'] } });
     render(<StorePage
@@ -76,6 +103,7 @@ describe('ArrayBase', () => {
     const Unshift = withArrayComponent((props: any) => <div {...props} />, { onUnshift: 'onClick' }, { children: 'unshift' });
     const Move = withArrayComponent((props: any) => <div {...props} />, { onMove: 'onClick' }, { children: 'move' });
     const store = new BaseStore({ defaultValues: { array: ['张三', '李四'] } });
+    const pushClick = jest.fn();
     render(<StorePage
       components={{ ArrayRender, RenderValue, EmptyPush, Push, Pop, Insert, Remove, Shift, Unshift, Move }}
       store={store}
@@ -85,11 +113,11 @@ describe('ArrayBase', () => {
           array: {
             type: 'array',
             'x-component': 'ArrayRender',
-            'x-component-props': { isRenderProperties: true },
+            'x-component-props': { isForceUpdate: true, isRenderProperties: true },
             items: [{ type: 'string', 'x-decorator': 'div', 'x-component': 'RenderValue' }],
             properties: {
               emptyPush: { type: 'void', 'x-component': 'EmptyPush', 'x-component-props': { arrayParams: { items: ['王五'] } } },
-              push: { type: 'void', 'x-component': 'Push', 'x-component-props': { arrayParams: { items: ['王五'] } } },
+              push: { type: 'void', 'x-component': 'Push', 'x-component-props': { onClick: pushClick, arrayParams: { items: ['王五'] } } },
               pop: { type: 'void', 'x-component': 'Pop' },
               insert: { type: 'void', 'x-component': 'Insert', 'x-component-props': { arrayParams: { index: 1, items: ['王五'] } } },
               remove: { type: 'void', 'x-component': 'Remove', 'x-component-props': { arrayParams: { index: 1 } } },
@@ -103,6 +131,8 @@ describe('ArrayBase', () => {
     />);
     fireEvent.click(screen.getByText('emptyPush'));
     fireEvent.click(screen.getByText('push'));
+    expect(pushClick).toBeCalledTimes(1);
+    expect(pushClick.mock.calls[0][0]).toEqual(['王五']);
     expect(screen.getByText('王五')).toBeInTheDocument();
     fireEvent.click(screen.getByText('pop'));
     expect(screen.queryByText('王五')).not.toBeInTheDocument();
@@ -129,6 +159,8 @@ describe('ArrayBase', () => {
     const ItemRemove = withArrayItemComponent((props: any) => <div {...props} />, { onRemove: 'onClick' }, { children: 'remove' });
     const ItemCopy = withArrayItemComponent((props: any) => <div {...props} />, { onCopy: 'onClick' }, { children: 'copy' });
     const store = new BaseStore({ defaultValues: { array: ['张三', '李四', '王五'] } });
+
+    const upClick = jest.fn();
     render(<StorePage
       components={{ ArrayRender, RenderValue, EmptyItemMoveUp, ItemMoveUp, ItemMoveDown, ItemRemove, ItemCopy }}
       store={store}
@@ -144,7 +176,7 @@ describe('ArrayBase', () => {
               properties: {
                 value: { type: 'string', 'x-component': 'RenderValue' },
                 emptyUp: { type: 'void', 'x-component': 'EmptyItemMoveUp' },
-                up: { type: 'void', 'x-component': 'ItemMoveUp' },
+                up: { type: 'void', 'x-component': 'ItemMoveUp', 'x-component-props': { onClick: upClick } },
                 down: { type: 'void', 'x-component': 'ItemMoveDown' },
                 remove: { type: 'void', 'x-component': 'ItemRemove' },
                 copy: { type: 'void', 'x-component': 'ItemCopy' },
@@ -161,6 +193,8 @@ describe('ArrayBase', () => {
     fireEvent.click(screen.getAllByText('emptyUp')[1]);
     expect(store.values.array).toEqual(['张三', '李四', '王五']);
     fireEvent.click(screen.getAllByText('up')[1]);
+    expect(upClick).toBeCalledTimes(1);
+    expect(upClick.mock.calls[0][0]).toBe(1);
     expect(store.values.array).toEqual(['李四', '张三', '王五']);
     fireEvent.click(screen.getAllByText('down')[2]);
     expect(store.values.array).toEqual(['王五', '李四', '张三']);
