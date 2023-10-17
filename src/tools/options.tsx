@@ -73,9 +73,6 @@ export const dataToOptions = <T extends string = 'label' | 'value'>(data?: any, 
 };
 
 export const judgeValueInOptions = (value: any, options: IOptions<'value'>, keys?: IKeys<'value'>) => {
-  if (judgeIsEmpty(value)) {
-    return true;
-  }
   const key = keys?.value ?? 'value';
   if (Array.isArray(value)) {
     return value.every(item => options?.some(option => option[key] === item));

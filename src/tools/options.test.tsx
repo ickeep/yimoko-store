@@ -1,4 +1,4 @@
-import { arrToOptions, strToOptions, objToOptions, dataToOptions, judgeValueInOptions } from './options';
+import { arrToOptions, strToOptions, objToOptions, dataToOptions, judgeValueInOptions, optionsToMap } from './options';
 
 describe('arrToOptions', () => {
   test('null', () => {
@@ -116,6 +116,51 @@ describe('judgeValueInOptions', () => {
   test('judgeValueInOptions', () => {
     expect(judgeValueInOptions(1, [{ label: '1', value: '1' }, { label: '2', value: '2' }])).toBeFalsy();
     expect(judgeValueInOptions('1', [{ label: '1', value: '1' }, { label: '2', value: '2' }])).toBeTruthy();
+    expect(judgeValueInOptions(['1', '2'], [{ label: '1', value: '1' }, { label: '2', value: '2' }])).toBeTruthy();
+    expect(judgeValueInOptions(['1', '3'], [{ label: '1', value: '1' }, { label: '2', value: '2' }])).toBeFalsy();
     expect(judgeValueInOptions('1', [])).toBeFalsy();
+  });
+});
+
+describe('optionsToMap', () => {
+  test('empty options', () => {
+    const options: any[] = [];
+    const map = optionsToMap(options);
+    expect(map).toEqual({});
+  });
+
+  test('non-array options', () => {
+    const options = { a: 1, b: 2 };
+    // @ts-ignore
+    const map = optionsToMap(options);
+    expect(map).toEqual(options);
+  });
+
+  test('default keys', () => {
+    const options = [
+      { value: '1', label: 'Option 1' },
+      { value: '2', label: 'Option 2' },
+      { value: '3', label: 'Option 3' },
+    ];
+    const map = optionsToMap(options);
+    expect(map).toEqual({
+      1: 'Option 1',
+      2: 'Option 2',
+      3: 'Option 3',
+    });
+  });
+
+  test('custom keys', () => {
+    const options: any[] = [
+      { id: '1', name: 'Option 1' },
+      { id: '2', name: 'Option 2' },
+      { id: '3', name: 'Option 3' },
+    ];
+    const map = optionsToMap(options, { value: 'id', label: 'name' });
+    expect(map).toEqual({
+      1: 'Option 1',
+      2: 'Option 2',
+      3: 'Option 3',
+    });
   });
 });
