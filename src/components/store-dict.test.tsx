@@ -33,6 +33,7 @@ describe('updateValueByDict', () => {
 
 describe('StoreDict', () => {
   test('self', async () => {
+    jest.useFakeTimers();
     const apiExecutor = jest.fn((params?: any) => Promise.resolve({ code: params?.code ?? 0, msg: '', data: params?.data }));
     const store = new BaseStore({
       api: {}, apiExecutor, dictConfig: [
@@ -40,17 +41,34 @@ describe('StoreDict', () => {
         { field: 'b', api: { url: '', data: [{ value: '2', label: 'a2' }] } },
         { field: 'c', data: [{ value: '1', label: 'a1' }], api: () => Promise.resolve({ code: 0, data: [{ value: '2', label: 'a2' }] }) },
         { field: 'd', data: [{ value: '1', label: 'a1' }], api: () => Promise.resolve({ code: 1, data: [{ value: '2', label: 'a2' }] }) },
+        {
+          field: 'e',
+          isApiOptionsToMap: true,
+          api: () => new Promise<IHTTPResponse>((resolve) => {
+            setTimeout(() => resolve({ code: 0, msg: '', data: [{ value: '2', label: 'a2' }] }), 100);
+          }),
+        },
+        {
+          field: 'f',
+          isApiOptionsToMap: true,
+          toMapKeys: { value: 'id', label: 'name' },
+          api: () => Promise.resolve({ code: 0, data: [{ id: '2', name: 'a2' }] }),
+        },
       ],
     });
-    // eslint-disable-next-line testing-library/no-unnecessary-act
+    render(<StoreDict store={store} />);
+    expect(store.dictLoading.e).toBeTruthy();
     await act(async () => {
-      render(<StoreDict store={store} />);
+      jest.runAllTimers();
     });
+    expect(store.dictLoading.e).toBeFalsy();
     expect(apiExecutor).toBeCalledTimes(1);
     expect(store.dict.a).toEqual([{ value: '1', label: 'a1' }]);
     expect(store.dict.b).toEqual([{ value: '2', label: 'a2' }]);
     expect(store.dict.c).toEqual([{ value: '2', label: 'a2' }]);
     expect(store.dict.d).toEqual([{ value: '1', label: 'a1' }]);
+    expect(store.dict.e).toEqual({ 2: 'a2' });
+    expect(store.dict.f).toEqual({ 2: 'a2' });
   });
 
   test('by getData', async () => {
@@ -87,21 +105,30 @@ describe('StoreDict', () => {
     };
 
     const apiExecutor = jest.fn((params?: any) => new Promise<IHTTPResponse>((resolve) => {
-      setTimeout(() => resolve({ code: 0, msg: '', data: dataMap[params?.params?.a] }), time);
+      setTimeout(() => resolve({ code: params?.params?.e ? 1 : 0, msg: '', data: dataMap[params?.params?.a] }), time);
     }));
 
     const store = new BaseStore({
       api: {}, apiExecutor,
-      defaultValues: { a: 'a', b: 'b' },
-      dictConfig: [{ field: 'b', type: 'by', byField: 'a', api: { data: [] } }],
+      defaultValues: { a: 'a', b: 'b', c: 'c', e: 'e' },
+      dictConfig: [
+        { field: 'b', type: 'by', byField: 'a', api: { data: [] } },
+        { field: 'c', type: 'by', byField: 'a', isApiOptionsToMap: true, api: { data: [] } },
+        { field: 'e', type: 'by', byField: 'e', api: { data: [] } },
+      ],
     });
 
     expect(store.values.b).toBe('b');
     render(<StoreDict store={store} />);
+    expect(store.dictLoading.b).toBeTruthy();
     await act(async () => {
       jest.runAllTimers();
     });
+    expect(store.dictLoading.b).toBeFalsy();
     expect(store.dict.b).toEqual(dataMap.a);
+    expect(store.dict.c).toEqual({ a1: 'a1' });
+    // 错误不更新
+    expect(store.dict.e).toBeUndefined();
 
     store.setValuesByField('a', 'b');
     store.setValuesByField('a', '');

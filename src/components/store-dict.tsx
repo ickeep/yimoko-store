@@ -27,7 +27,9 @@ export const StoreDict = observer((props: { store: IStore }) => {
         const { data, api } = conf;
         store.setDictByField(field, data);
         if (api) {
+          store.setDictLoading(field, true);
           runStoreAPI(api, apiExecutor)?.then?.((res: any) => {
+            store.setDictLoading(field, false);
             if (judgeIsSuccess(res)) {
               if (isApiOptionsToMap) {
                 store.setDictByField(field, optionsToMap(res.data, toMapKeys));
@@ -68,14 +70,18 @@ export const StoreDict = observer((props: { store: IStore }) => {
               lastDisposerMap[byField] = changeNumInRange(lastDisposerMap[byField]);
               const last = lastDisposerMap[byField];
               const params = { [paramKey]: newVal };
+              store.setDictLoading(field, true);
               runStoreAPI(api, apiExecutor, params)?.then((res: any) => {
-                if (last === lastDisposerMap[byField] && judgeIsSuccess(res)) {
-                  if (isApiOptionsToMap) {
-                    store.setDictByField(field, optionsToMap(res.data, toMapKeys));
-                  } else {
-                    store.setDictByField(field, res.data);
+                if (last === lastDisposerMap[byField]) {
+                  store.setDictLoading(field, false);
+                  if (judgeIsSuccess(res)) {
+                    if (isApiOptionsToMap) {
+                      store.setDictByField(field, optionsToMap(res.data, toMapKeys));
+                    } else {
+                      store.setDictByField(field, res.data);
+                    }
+                    updateValueByDict(conf, res.data, store);
                   }
-                  updateValueByDict(conf, res.data, store);
                 }
               });
             }

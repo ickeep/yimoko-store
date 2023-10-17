@@ -37,6 +37,7 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
   api?: IStoreAPI<V, R>;
 
   dict: IStoreDict<V> = {};
+  dictLoading: IStoreDictLoading<V> = {};
   values: IV<V>;
   response: IStoreResponse<R, V> = {};
   loading = false;
@@ -62,6 +63,7 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
     this.dictConfig = dictConfig;
     this.fieldsConfig = fieldsConfig;
 
+
     this.transform = transform;
 
     this.defaultValues = defaultValues;
@@ -79,6 +81,7 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
     define(this, {
       values: observable,
       dict: observable,
+      dictLoading: observable,
       response: observable,
       loading: observable,
 
@@ -91,6 +94,7 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
       setValuesByRouter: action,
 
       setDict: action,
+      setDictLoading: action,
       setDictByField: action,
 
       setLoading: action,
@@ -144,7 +148,6 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
 
   setValuesByField = (field: IField<V>, value: any) => set(this.values, field, value);
 
-  // type all undefined 则填默认值  "" 则填空字符串
   setValuesByRouter = (search: string | Partial<Record<Key, any>>, params?: Record<Key, any>, type: 'all' | 'part' = 'all') => {
     let newValues: any = {};
     if (typeof search === 'string') {
@@ -182,6 +185,8 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
   setDict = (dict: IStoreDict<V>) => this.dict = dict;
 
   setDictByField = (field: IField<V>, value: any) => this.dict[field] = value;
+
+  setDictLoading = (field: IField<V>, value: boolean) => this.dictLoading[field] = value;
 
   setLoading = (loading: boolean) => this.loading = loading;
 
@@ -259,6 +264,8 @@ export interface IStoreValues extends Object {
 type IV<V = IStoreValues> = V & Record<Key, any>;
 
 export type IStoreDict<V extends object = IStoreValues> = { [key in IField<V>]?: any };
+
+export type IStoreDictLoading<V extends object = IStoreValues> = { [key in IField<V>]?: boolean };
 
 export type IStoreResponse<R = any, V = any> = Partial<IHTTPResponse<R, IV<V>>>;
 
