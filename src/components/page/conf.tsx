@@ -52,6 +52,7 @@ export const useOperateRunAfter = (pageProps: OperatePageProps<any, any>) => {
   const { store, parentStore, isRefreshParent = pageProps.isBoxContent, onSuccess, onFail } = pageProps;
 
   const { runAfter = {} } = store ?? {};
+
   if (judgeIsEmpty(runAfter.runOnSuccess)) {
     runAfter.runOnSuccess = (...args) => {
       jumpOnOperateSuccess(pageProps, navigate);
