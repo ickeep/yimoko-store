@@ -1,31 +1,9 @@
-import axios, { AxiosRequestConfig, AxiosRequestTransformer, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Key } from 'react';
 
 import { getCodeByStatus, IHTTPCode, IHTTPResponse } from './api';
-import { getAutoArr } from './tool';
 
-// 根据 Content-Type 自动转换数据 form-data，
-export const autoTransformDataType: AxiosRequestTransformer = (data, headers) => {
-  if (headers?.['Content-Type'] === 'multipart/form-data' && data && !(data instanceof FormData)) {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, values]: [string, any]) => formData.append(key, values));
-    return formData;
-  }
-  return data;
-};
-
-// 设置 Content-Type 为 form-data
-export const setContentTypeFormData = (config: AxiosRequestConfig) => {
-  const newConfig = config;
-  !newConfig.headers && (newConfig.headers = {});
-  newConfig.headers['Content-Type'] = 'multipart/form-data';
-  return newConfig;
-};
-
-export const http = axios.create({
-  headers: { 'X-Requested-With': 'XMLHttpRequest' },
-  transformRequest: [autoTransformDataType, ...getAutoArr(axios.defaults.transformRequest)],
-});
+export const http = axios.create();
 
 // 将 response 处理为统一的 { code, data, message } 格式
 export const httpRequest: IHTTPRequest = async (config) => {
@@ -53,10 +31,6 @@ export const httpOptions: IHTTPGet = (url, config) => httpRequest({ ...config, u
 export const httpPost: IHTTPPost = (url, data, config) => httpRequest({ ...config, url, data, method: 'post' });
 export const httpPut: IHTTPPost = (url, data, config) => httpRequest({ ...config, url, data, method: 'put' });
 export const httpPatch: IHTTPPost = (url, data, config) => httpRequest({ ...config, url, data, method: 'patch' });
-
-export const httpPostForm: IHTTPPost = (url, data, config) => httpRequest(setContentTypeFormData({ ...config, url, data, method: 'post' }));
-export const httpPutForm: IHTTPPost = (url, data, config) => httpRequest(setContentTypeFormData({ ...config, url, data, method: 'put' }));
-export const httpPatchForm: IHTTPPost = (url, data, config) => httpRequest(setContentTypeFormData({ ...config, url, data, method: 'patch' }));
 
 // 处理请求返回的数据
 export const handleResponse = <T = Record<Key, any>>(response: AxiosResponse<T>): IHTTPResponse<T> => {
