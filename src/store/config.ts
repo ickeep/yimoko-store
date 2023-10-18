@@ -29,7 +29,7 @@ export type SkeletonComponent = ComponentType<{ loading?: boolean, children?: Re
 
 export type IConfigComponents = {
   Loading?: LoadingComponent,
-  Error?: ErrorComponent,
+  ErrorContent?: ErrorComponent,
   Skeleton?: SkeletonComponent,
   [key: string]: ComponentType<any> | undefined
 };
