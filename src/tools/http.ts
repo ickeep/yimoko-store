@@ -38,14 +38,14 @@ export const handleResponse = <T = Record<Key, any>>(response: AxiosResponse<T>)
   const resData = getResponseData(response);
   return {
     ...response,
-    code: resData?.code ?? getCodeByStatus(status),
+    code: typeof resData?.code === 'number' ? resData?.code : getCodeByStatus(status),
     msg: resData?.msg ?? statusText,
     data: resData.data ?? data,
   };
 };
 
 
-// 获取 response data
+// 获取 response data 适配 { code, msg, data } 格式 或者直接返回 response
 export const getResponseData = (response: AxiosResponse): Record<Key, any> => {
   const { data } = response;
   return (typeof data?.code !== 'undefined' && (typeof data?.msg !== 'undefined' || typeof data?.data !== 'undefined')) ? data : response;
