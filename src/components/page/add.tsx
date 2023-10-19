@@ -10,10 +10,9 @@ import { OperatePageProps, useOperateRunAfter } from './conf';
 import { StorePageProps, StorePage } from './store';
 
 export const AddPage: <T extends object = Record<Key, any>, R extends object = any>(props: OperatePageProps<T, R>) => ReactElement<any, any> | null = observer((props) => {
-  const {
-    storeConfig, store, scope,
-    jumpOnSuccess, parentStore, isRefreshParent, onSuccess, onFail, ...rest } = props;
+  const { storeConfig, store, scope, jumpOnSuccess, parentStore, isRefreshParent, onSuccess, onFail, ...rest } = props;
   const { fieldsConfig, api } = storeConfig;
+
   const runAfter = useOperateRunAfter(props);
 
   const curScope = useDeepMemo(() => ({ $config: storeConfig, ...scope }), [storeConfig, scope]);
