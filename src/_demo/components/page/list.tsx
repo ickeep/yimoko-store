@@ -12,7 +12,6 @@ export const ListPageDemo = () => (
       defaultValues: { name: '' },
       isBindRouter: true,
       api: () => new Promise(resolve => setTimeout(() => resolve({ code: 0, msg: '编辑成功', data: { page: 1, data: [{ name: '张三' }, { name: '李四' }] } }), 1000)),
-
     }}
     schema={{
       type: 'object',
