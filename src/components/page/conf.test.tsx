@@ -7,6 +7,9 @@ import { OperateStore } from '../../store/operate';
 import { OperatePageProps, PageStoreConfig, getAddPath, getDetailPath, getEditPath, getListPath, jumpOnOperateSuccess, useOperateRunAfter } from './conf';
 
 describe('getListPath', () => {
+  test('empty', () => {
+    expect(getListPath()).toBe('');
+  });
   test('returns basePath + list if path.list is defined', () => {
     const config: PageStoreConfig = { basePath: '/api', path: { list: '/users' }, fieldsConfig: {}, api: {} };
     expect(getListPath(config)).toBe('/api/users');
@@ -39,14 +42,16 @@ describe('getAddPath', () => {
   });
 
   test('returns basePath  if path is undefined', () => {
-    const config = { fieldsConfig: {}, api: {} };
-    expect(getAddPath(config)).toBe('/add');
+    expect(getAddPath()).toBe('/add');
   });
 });
 describe('getEditPath', () => {
   const record = { id: 123, name: 'John Doe' };
   const config = { basePath: '/api', path: { edit: '/users/edit' }, idKey: 'id', fieldsConfig: {}, api: {} };
 
+  test('empty', () => {
+    expect(getEditPath(record)).toBe('/edit?id=123');
+  });
   test('returns the correct edit path', () => {
     expect(getEditPath(record, config)).toBe('/api/users/edit?id=123');
   });
@@ -70,6 +75,10 @@ describe('getEditPath', () => {
 describe('getDetailPath', () => {
   const record = { id: 123, name: 'John Doe' };
   const config = { basePath: '/api', path: { detail: '/users/detail' }, idKey: 'id', fieldsConfig: {}, api: {} };
+
+  test('empty', () => {
+    expect(getDetailPath(record)).toBe('/detail?id=123');
+  });
 
   test('returns the correct detail path', () => {
     expect(getDetailPath(record, config)).toBe('/api/users/detail?id=123');

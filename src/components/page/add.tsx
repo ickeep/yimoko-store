@@ -4,14 +4,15 @@ import { Key, ReactElement } from 'react';
 import { useDeepMemo } from '../../hooks/use-deep-memo';
 import { IStoreConfig } from '../../store';
 import { BaseStore } from '../../store/base';
+import { OperateStore } from '../../store/operate';
 import { judgeIsEmpty } from '../../tools/tool';
 
-import { OperatePageProps, useOperateRunAfter } from './conf';
+import { OperatePageProps, PageStoreConfig, useOperateRunAfter } from './conf';
 import { StorePageProps, StorePage } from './store';
 
 export const AddPage: <T extends object = Record<Key, any>, R extends object = any>(props: OperatePageProps<T, R>) => ReactElement<any, any> | null = observer((props) => {
   const { storeConfig, store, scope, jumpOnSuccess, parentStore, isRefreshParent, onSuccess, onFail, ...rest } = props;
-  const { fieldsConfig, api } = storeConfig;
+  const { fieldsConfig = {}, api } = (storeConfig ?? {}) as PageStoreConfig<any>;
 
   const runAfter = useOperateRunAfter(props);
 
@@ -24,8 +25,7 @@ export const AddPage: <T extends object = Record<Key, any>, R extends object = a
       judgeIsEmpty(store.fieldsConfig) && (store.fieldsConfig = fieldsConfig);
       return store;
     }
-    return ({
-      type: 'operate',
+    return new OperateStore<any>({
       api: api?.add,
       fieldsConfig,
       ...store,

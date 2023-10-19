@@ -10,7 +10,7 @@ export const AddPageDemo = () => (
       },
     }}
     store={{
-      defaultValues: { name: '' },
+      defaultValues: { name: 'add' },
       // 查看 loading 状态
       api: () => new Promise(resolve => setTimeout(() => resolve({ code: 0, msg: '添加成功' }), 1000)),
     }}

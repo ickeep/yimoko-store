@@ -6,7 +6,7 @@ import { AddPage } from './add';
 
 describe('add page', () => {
   test('empty', () => {
-    render(<AddPage storeConfig={{ fieldsConfig: {}, api: {} }} />);
+    render(<AddPage />);
     expect(document.body.textContent).toBe('');
   });
 

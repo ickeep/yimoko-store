@@ -11,26 +11,26 @@ import { judgeIsEmpty } from '../../tools/tool';
 
 import { StorePageProps } from './store';
 
-export const getListPath = (config: PageStoreConfig) => {
-  const { basePath = '', path } = config;
+export const getListPath = (config?: PageStoreConfig) => {
+  const { basePath = '', path } = config ?? {};
   const { list = '' } = path ?? {};
   return `${basePath}${list}`;
 };
 
-export const getAddPath = (config: PageStoreConfig) => {
-  const { basePath = '', path } = config;
+export const getAddPath = (config?: PageStoreConfig) => {
+  const { basePath = '', path } = config ?? {};
   const { add = '/add' } = path ?? {};
   return `${basePath}${add}`;
 };
 
-export const getEditPath = (record: Record<Key, any>, config: PageStoreConfig) => {
-  const { basePath = '', path, idKey = 'id' } = config;
+export const getEditPath = (record: Record<Key, any>, config?: PageStoreConfig) => {
+  const { basePath = '', path, idKey = 'id' } = config ?? {};
   const { edit = '/edit' } = path ?? {};
   return `${basePath}${edit}?${idKey}=${record[idKey]}`;
 };
 
-export const getDetailPath = (record: Record<Key, any>, config: PageStoreConfig) => {
-  const { basePath = '', path, idKey = 'id' } = config;
+export const getDetailPath = (record: Record<Key, any>, config?: PageStoreConfig) => {
+  const { basePath = '', path, idKey = 'id' } = config ?? {};
   const { detail = '/detail' } = path ?? {};
   return `${basePath}${detail}?${idKey}=${record[idKey]}`;
 };
@@ -100,7 +100,7 @@ export interface OperatePageProps<T extends object = Record<Key, any>, R extends
   values?: T,
   // 数据源的 Store 例如在编辑页面，需要传入详情数据
   dataStore?: IBaseStoreConfig<any, any>,
-  storeConfig: PageStoreConfig<T>
+  storeConfig?: PageStoreConfig<T>
   store?: IOperateStoreConfig<T, R>
   parentStore?: IStore
   // 成功后跳转的页面，true为列表页，string为指定页面
@@ -109,4 +109,5 @@ export interface OperatePageProps<T extends object = Record<Key, any>, R extends
   onFail?: IRunFn
   // 当弹窗时，成功是否刷新父页面
   isRefreshParent?: boolean
+  isPickValues?: boolean
 }
