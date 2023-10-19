@@ -1,11 +1,9 @@
 import { observer } from '@formily/react';
-import { Key, ReactElement, useMemo } from 'react';
+import { FC, Key, useMemo } from 'react';
 
-import { useSchemaComponents } from '../../context/schema-components';
 import { useDeepMemo } from '../../hooks/use-deep-memo';
-import { useStore } from '../../hooks/use-store';
 import { IStoreConfig } from '../../store';
-import { BaseStore, IBaseStoreConfig } from '../../store/base';
+import { BaseStore } from '../../store/base';
 import { judgeIsEmpty } from '../../tools/tool';
 
 import { PageStoreConfig } from './conf';
@@ -14,76 +12,70 @@ import { StorePageContent } from './store-content';
 
 export interface DetailPageProps<T extends object = Record<Key, any>, R extends object = any> extends Omit<StorePageProps<any>, 'store'> {
   values?: T,
-  dataStore?: IBaseStoreConfig<any, any>,
+  dataStore?: IStoreConfig<any, any>,
   storeConfig: PageStoreConfig<T>,
   store?: IStoreConfig<T, R>
 }
 
-export const DetailPage = observer((props: DetailPageProps) => {
-  const { values, dataStore, storeConfig, store, isBoxContent, scope, ...rest } = props;
-  const { fieldsConfig } = storeConfig;
-  const curScope = { $config: storeConfig, ...scope };
-  const components = useSchemaComponents();
+export type IDetailPage<T extends object = Record<Key, any>, R extends object = any> = FC<DetailPageProps<T, R>>;
 
-  if (!judgeIsEmpty(values)) {
+export const DetailPage: IDetailPage = observer((props) => {
+  if (!judgeIsEmpty(props.values)) {
     return (
-      <StorePage
-        components={components}
-        {...rest}
-        scope={curScope}
-        store={{
-          fieldsConfig,
-          ...store,
-          defaultValues: { ...values, ...store?.defaultValues },
-        }}
-      />
+      <ValuesDetailPage {...props} />
     );
   }
-  return <FetchDetailPage {...props} scope={curScope} />;
+  return <FetchDetailPage {...props} />;
 });
 
-export const FetchDetailPage: <T extends object = Record<Key, any>, R extends object = any>(props: DetailPageProps<T, R>) => ReactElement<any, any> | null = observer((props) => {
-  const { dataStore, storeConfig, skeleton } = props;
+// 当 values 有值时，直接渲染
+const ValuesDetailPage: IDetailPage = observer((props) => {
+  const { values, dataStore, storeConfig, store, scope, ...rest } = props;
+  const { fieldsConfig } = storeConfig;
+  const curScope = useMemo(() => ({ $config: storeConfig, ...scope }), [storeConfig, scope]);
+
+  const curStore: IStoreConfig = useDeepMemo(() => {
+    if (store instanceof BaseStore) {
+      judgeIsEmpty(store.fieldsConfig) && (store.fieldsConfig = fieldsConfig);
+      store.defaultValues = { ...store.defaultValues, ...values };
+      store.resetValues();
+      return store;
+    }
+    return ({
+      fieldsConfig,
+      ...store,
+      defaultValues: { ...store?.defaultValues, ...values },
+    });
+  }, [fieldsConfig, store, values]);
+
+  return (<StorePage  {...rest} scope={curScope} store={curStore} />);
+});
+
+export const FetchDetailPage: IDetailPage = observer((props) => {
+  const { dataStore, storeConfig, skeleton, scope } = props;
   const { api, idKey = 'id' } = storeConfig;
 
-  const detailStore = useStore({
-    type: 'base',
-    isBindRouter: true,
-    isRunNow: true,
-    api: api?.detail,
-    defaultValues: { [idKey]: '' },
-    ...dataStore,
-  });
+  const curDataStore = useDeepMemo(() => {
+    if (dataStore instanceof BaseStore) {
+      return dataStore;
+    }
+    return new BaseStore({
+      isBindRouter: true,
+      isRunNow: true,
+      api: api?.detail,
+      defaultValues: { [idKey]: '' },
+      ...dataStore,
+    });
+  }, [api?.detail, dataStore, idKey]);
+
+  const curScope = useMemo(() => ({ ...scope, dataStore: curDataStore }), [scope, curDataStore]);
 
   return (
-    <StorePage store={detailStore} >
+    <StorePage store={curDataStore} >
       <StorePageContent skeleton={skeleton} >
-        <DetailContent {...props} detailStore={detailStore} />
+        <ValuesDetailPage {...props} scope={curScope} values={curDataStore?.response?.data} />
       </StorePageContent>
     </StorePage>
   );
 });
 
-
-const DetailContent: <T extends object = Record<Key, any>, R extends object = any> (
-  props: DetailPageProps<T, R> & { detailStore: BaseStore<any, any> }
-) => ReactElement<any, any> | null = observer((props) => {
-  const { values, dataStore, storeConfig, detailStore, skeleton, store, ...rest } = props;
-  const { fieldsConfig } = storeConfig;
-
-  const curStore = useDeepMemo(() => {
-    const values: any = { ...store?.defaultValues, ...detailStore.response.data };
-    if (store instanceof BaseStore) {
-      judgeIsEmpty(store.fieldsConfig) && (store.fieldsConfig = fieldsConfig);
-      store.defaultValues = values;
-      store.setValues({ ...values });
-      return store;
-    }
-    return ({ fieldsConfig, ...store, values, defaultValues: values });
-  }, [store, fieldsConfig, detailStore.response.data]);
-
-  const scope = useMemo(() => ({ detailStore }), [detailStore]);
-
-
-  return <StorePage {...rest} store={curStore} scope={scope} />;
-});

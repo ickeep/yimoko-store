@@ -52,5 +52,7 @@ export const EditPage: <T extends object = Record<Key, any>, R extends object = 
       <StorePage  {...curStoreProps} />
     );
   }
+
+  // @ts-ignore
   return <FetchDetailPage {...props} store={curStore} scope={curScope} />;
 });
