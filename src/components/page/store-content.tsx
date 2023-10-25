@@ -51,5 +51,6 @@ export const StorePageContent = observer((props: StorePageContentProps) => {
     return <Skeleton {...skeleton} />;
   }
 
+  // TODO 考虑是否将 load 属性传至 ErrorContent 以保证 loading 效果一致
   return <ErrorContent response={response} isReturnIndex={isReturnIndex} onAgain={curOnAgain} loading={loading} />;
 });
