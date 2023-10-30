@@ -26,6 +26,7 @@ export * from './hoc/value-children';
 export * from './hooks/use-api-options';
 export * from './hooks/use-api-search-options';
 export * from './hooks/use-base-store';
+export * from './hooks/use-children-nullish-coalescing';
 export * from './hooks/use-cur-form';
 export * from './hooks/use-cur-store';
 export * from './hooks/use-deep-effect';
@@ -35,7 +36,6 @@ export * from './hooks/use-list-store';
 export * from './hooks/use-operate-store';
 export * from './hooks/use-options';
 export * from './hooks/use-schema-children';
-// export * from './hooks/use-schema-items';
 export * from './hooks/use-store-bind-router';
 export * from './hooks/use-store';
 

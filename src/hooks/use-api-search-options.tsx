@@ -35,6 +35,7 @@ export const useAPISearchOptions = <T extends string = 'label' | 'value'>(
   searchConfig?: IOptionsAPISearchConfig,
   keys?: IKeys<T>,
   splitter?: string,
+  childrenKey?: string,
 ): [IOptions<T>, boolean, Dispatch<SetStateAction<IOptions<T>>>] => {
   const [options, setOptions] = useState<IOptions<T>>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -78,20 +79,20 @@ export const useAPISearchOptions = <T extends string = 'label' | 'value'>(
         if (fetchId === fetchRef.current) {
           setLoading(false);
           const curKeys = (searchConfig?.keys ?? keys) as IKeys<T>;
-          judgeIsSuccess(res) && setOptions(dataToOptions(res.data, curKeys, splitter));
+          judgeIsSuccess(res) && setOptions(dataToOptions(res.data, curKeys, splitter, childrenKey));
         }
       });
     };
     return debounce(loadOptions, searchConfig?.wait ?? 300);
-  }, [keys, searchConfig, splitter]);
+  }, [childrenKey, keys, searchConfig, splitter]);
 
   const fetchOptions = useMemo(() => fetcher(apiFn), [apiFn, fetcher]);
 
   const fetchOptionsForValue = useMemo(() => fetcher(apiFnForValue), [apiFnForValue, fetcher]);
 
   useDeepEffect(() => {
-    curData && setOptions(dataToOptions(curData, keys, splitter));
-  }, [curData, keys, splitter]);
+    curData && setOptions(dataToOptions(curData, keys, splitter, childrenKey));
+  }, [childrenKey, curData, keys, splitter]);
 
   useEffect(() => {
     input && fetchOptions?.(input);
@@ -109,11 +110,11 @@ export const useAPISearchOptions = <T extends string = 'label' | 'value'>(
     // const curKeys = (searchConfig?.keys ?? keys) as IKeys<T>;
     // options 格式已处理，不需要再传 keys
     // @ts-ignore
-    if (ifFetch() && !judgeValueInOptions(value, options)) {
+    if (ifFetch() && !judgeValueInOptions(value, options, childrenKey)) {
       setValueSearched(true);
       fetchOptionsForValue?.(value);
     }
-  }, [fetchOptionsForValue, input, keys, loading, options, searchConfig?.keys, value, valueSearched]);
+  }, [childrenKey, fetchOptionsForValue, input, keys, loading, options, searchConfig?.keys, value, valueSearched]);
 
   return [options, loading, setOptions];
 };

@@ -25,7 +25,7 @@ export type IOptionsOutAPIProps<T extends string = keyof typeof defaultOutOption
 export type IOptionsAPI = IAPIRequestConfig | ((config?: IAPIRequestConfig) => Promise<IHTTPResponse>);
 
 export const useAPIOptions = <T extends string = 'label' | 'value'>(
-  data?: any, api?: IOptionsAPI, keys?: IKeys<T>, splitter?: string,
+  data?: any, api?: IOptionsAPI, keys?: IKeys<T>, splitter?: string, childrenKey?: string,
 ): [IOptions<T>, boolean, Dispatch<SetStateAction<IOptions<T>>>] => {
   const [options, setOptions] = useState<IOptions<T>>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -36,16 +36,16 @@ export const useAPIOptions = <T extends string = 'label' | 'value'>(
   const apiFn = useDeepMemo(() => (!api ? undefined : () => runStoreAPI(api, apiExecutor)), [apiExecutor, api]);
 
   useDeepEffect(() => {
-    curData && setOptions(dataToOptions(curData, keys, splitter));
-  }, [curData, keys, splitter]);
+    curData && setOptions(dataToOptions(curData, keys, splitter, childrenKey));
+  }, [childrenKey, curData, keys, splitter]);
 
   useDeepEffect(() => {
     apiFn && setLoading(true);
     apiFn?.()?.then((res: any) => {
-      judgeIsSuccess(res) && setOptions(dataToOptions(res.data, keys, splitter));
+      judgeIsSuccess(res) && setOptions(dataToOptions(res.data, keys, splitter, childrenKey));
       setLoading(false);
     });
-  }, [apiFn, keys, splitter]);
+  }, [apiFn, childrenKey, keys, splitter]);
 
   return [options, loading, setOptions];
 };

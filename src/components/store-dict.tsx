@@ -6,7 +6,7 @@ import { IStore } from '../store';
 import { IDictConfigItemBy } from '../store/base';
 import { useAPIExecutor } from '../store/config';
 import { runStoreAPI } from '../store/utils/api';
-import { getFieldIsMultiple, getFieldKeys, getFieldSplitter } from '../store/utils/field';
+import { getFieldChildrenKey, getFieldIsMultiple, getFieldKeys, getFieldSplitter } from '../store/utils/field';
 import { judgeIsSuccess } from '../tools/api';
 import { changeNumInRange } from '../tools/num';
 import { dataToOptions, DF_KEYS, optionsToMap } from '../tools/options';
@@ -116,7 +116,8 @@ export const updateValueByDict = (config: IDictConfigItemBy, dict: any, store: I
     const isMultiple = getFieldIsMultiple(field, store);
     const splitter = getFieldSplitter(field, store);
     const keys = { ...DF_KEYS, ...getFieldKeys(field, store) };
-    const options = dataToOptions(dict, keys, splitter);
+    const childrenKey = getFieldChildrenKey(field, store);
+    const options = dataToOptions(dict, keys, splitter, childrenKey);
     const haveMap: Record<string, boolean> = {};
 
     options.forEach(item => haveMap[item.value] = true);

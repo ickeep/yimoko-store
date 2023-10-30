@@ -8,7 +8,7 @@ import { judgeIsEmpty } from './tool';
 
 export const DF_KEYS: IKeys = { label: 'label', value: 'value' };
 
-export function arrToOptions<T extends string = 'label' | 'value'>(options: IOptions<T> = [], keys?: IKeys<T>): IOptions<T> {
+export function arrToOptions<T extends string = 'label' | 'value'>(options: IOptions<T> = [], keys?: IKeys<T>, childrenKey?: string): IOptions<T> {
   if (!keys) {
     return options;
   }
@@ -20,16 +20,32 @@ export function arrToOptions<T extends string = 'label' | 'value'>(options: IOpt
       optionsValues.push(value);
     }
   });
+
   if (judgeIsEmpty(optionsKeys)) {
     return options;
   }
 
+  if (childrenKey && !optionsKeys.includes(childrenKey)) {
+    optionsKeys.push(childrenKey);
+  }
+
   return options?.map((item) => {
-    const newItem: Record<string, string> = omit(item, optionsValues);
+    const newItem: Record<string, any> = omit(item, optionsValues);
+    // eslint-disable-next-line complexity
     optionsKeys.forEach((key) => {
-      const val = item[keys[key]];
+      const val = item[keys[key] ?? key];
       if (val !== undefined || newItem[key] !== undefined) {
-        newItem[key] = val;
+        if (childrenKey && childrenKey === key) {
+          if (Array.isArray(val)) {
+            newItem[key] = arrToOptions(val, keys, childrenKey);
+          } else if (typeof val === 'object') {
+            newItem[key] = objToOptions(val, keys, childrenKey);
+          } else {
+            newItem[key] = [];
+          }
+        } else {
+          newItem[key] = val;
+        }
       }
     });
     return newItem as IOption<T>;
@@ -47,19 +63,20 @@ export const strToOptions = <T extends string = 'label' | 'value'>(str = '', spl
   });
 };
 
-export const objToOptions = <T extends string = 'label' | 'value'>(obj: Record<Key, any> = {}, keys?: IKeys<T>): IOptions<T> => {
+export const objToOptions = <T extends string = 'label' | 'value'>(obj: Record<Key, any> = {}, keys?: IKeys<T>, childrenKey?: string): IOptions<T> => {
   const options = !obj ? [] : Object.entries(obj).map(([key, value]) => {
     if (value && typeof value === 'object') {
       return { value: key, ...value };
     }
     return { value: key, label: value?.toString?.() ?? key };
   });
-  return arrToOptions(options, keys);
+  return arrToOptions(options, keys, childrenKey);
 };
 
-export const dataToOptions = <T extends string = 'label' | 'value'>(data?: any, keys?: IKeys<T>, splitter = ','): IOptions<T> => {
+// 当 childrenKey 存在时，进行递归处理
+export const dataToOptions = <T extends string = 'label' | 'value'>(data?: any, keys?: IKeys<T>, splitter = ',', childrenKey?: string): IOptions<T> => {
   if (Array.isArray(data)) {
-    return arrToOptions(data, keys);
+    return arrToOptions(data, keys, childrenKey);
   }
 
   if (typeof data === 'string') {
@@ -67,18 +84,28 @@ export const dataToOptions = <T extends string = 'label' | 'value'>(data?: any, 
   }
 
   if (typeof data === 'object') {
-    return objToOptions(data, keys);
+    return objToOptions(data, keys, childrenKey);
   }
   return [];
 };
 
-export const judgeValueInOptions = (value: any, options: IOptions<'value'>, keys?: IKeys<'value'>) => {
+export const judgeValueInOptions = (value: any, options: IOptions<'value'>, keys?: IKeys<'value'>, childrenKey?: string): boolean => {
   const key = keys?.value ?? 'value';
+  const isSome = (val: any, arr: IOptions<'value'>) => arr?.some((option) => {
+    if (option[key] === val) {
+      return true;
+    }
+    if (childrenKey && option[childrenKey]) {
+      return judgeValueInOptions(value, option[childrenKey], keys, childrenKey);
+    }
+    return false;
+  });
   if (Array.isArray(value)) {
-    return value.every(item => options?.some(option => option[key] === item));
+    return value.every(item => isSome(item, options));
   }
-  return options?.some(option => option[key] === value);
+  return isSome(value, options);
 };
+
 
 export const optionsToMap = <T extends Key = Key>(options: IOptions, keys?: { value?: string, label?: string }) => {
   const map: Record<T, any> = Object({});
@@ -95,7 +122,7 @@ export const optionsToMap = <T extends Key = Key>(options: IOptions, keys?: { va
 export type IOptions<T extends Key = 'label' | 'value'> = Array<IOption<T>>;
 
 
-export type IOption<T extends Key = 'label' | 'value'> = { [key in T]: any } & { [key: string]: any };
+export type IOption<T extends Key = 'label' | 'value'> = { [key in T]?: any } & { [key: string]: any };
 
 
 export type IKeys<T extends Key = 'label' | 'value'> = { [key in T | string]: string };

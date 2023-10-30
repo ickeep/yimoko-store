@@ -30,6 +30,12 @@ export const getFieldSplitter = (field: IField<any>, store: BaseStore<any, any>)
   return fieldsConfig?.[field]?.['x-component-props']?.splitter ?? ',';
 };
 
+
+export const getFieldChildrenKey = (field: IField<any>, store: BaseStore<any, any>): string | undefined => {
+  const { fieldsConfig } = store;
+  return fieldsConfig?.[field]?.['x-component-props']?.childrenKey;
+};
+
 export const getFieldType = (field: IField<any>, store: BaseStore<any, any>) => {
   const { fieldsConfig, defaultValues } = store;
   const type = fieldsConfig?.[field]?.type;
