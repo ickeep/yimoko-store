@@ -11,6 +11,8 @@ import { EditPageDemo } from './components/page/edit';
 
 import { ListPageDemo } from './components/page/list';
 
+import { TriggerDemo } from './components/trigger';
+
 import { IndexDemo } from '.';
 
 export const ROUTES_CONF: Array<IRouteConf> = [
@@ -26,8 +28,8 @@ export const ROUTES_CONF: Array<IRouteConf> = [
           { path: 'list', name: '列表', component: ListPageDemo },
         ],
       },
+      { path: 'trigger', component: TriggerDemo, name: '触发器 - Trigger' },
       { path: 'arrayBase', component: ArrayBaseDemo, name: '数组基础 - ArrayBase' },
-
     ],
   },
 ];
