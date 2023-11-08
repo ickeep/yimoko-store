@@ -54,10 +54,10 @@
     }
   },
   "dependencies": {
-    "@formily/core": "^2.2.21",
-    "@formily/react": "^2.2.21",
-    "@formily/reactive": "^2.2.21",
-    "@formily/reactive-react": "^2.2.21",
+    "@formily/core": "^2.3.0",
+    "@formily/react": "^2.3.0",
+    "@formily/reactive": "^2.3.0",
+    "@formily/reactive-react": "^2.3.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

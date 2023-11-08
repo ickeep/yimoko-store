@@ -1,9 +1,9 @@
-import { createSchemaField, ISchemaFieldProps, SchemaReactComponents, useExpressionScope } from '@formily/react';
+import { createSchemaField, ISchemaFieldProps, SchemaComponentsContext, SchemaReactComponents, useExpressionScope } from '@formily/react';
 import { createContext, FC, useContext } from 'react';
 
 import { useDeepMemo } from '../hooks/use-deep-memo';
+import { judgeIsEmpty } from '../library';
 
-import { SchemaComponentsContext } from './schema-components';
 
 const SchemaField = createSchemaField();
 
@@ -19,7 +19,7 @@ export const useSchemaField = <Components extends SchemaReactComponents = any>(c
   const oldScope = useExpressionScope();
 
   return useDeepMemo(() => {
-    if (!(components || scope)) {
+    if (judgeIsEmpty(components) && judgeIsEmpty(scope) && df) {
       return df;
     }
     return createSchemaField({ components: { ...dfComponents, ...components }, scope: { ...oldScope, ...scope } });

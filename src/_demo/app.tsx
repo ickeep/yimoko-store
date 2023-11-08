@@ -8,7 +8,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrayRender,
   ConfigStore, ConfigStoreProvider, INotifier,
-  RedirectListData, SchemaComponentsProvider, SchemaFieldProvider, StorePageContent, httpRequest, judgeValidKey, withValueChildren,
+  RedirectListData, SchemaFieldProvider, StorePageContent, httpRequest, judgeValidKey, withValueChildren,
 } from '../library';
 
 import { ErrorContent } from './error-content';
@@ -89,21 +89,19 @@ function App() {
   return (
     <ConfigProvider locale={zhCN}>
       <ConfigStoreProvider value={configStore}>
-        <SchemaComponentsProvider value={components}>
-          <SchemaFieldProvider value={SchemaField}>
-            <div className="App" style={{ minHeight: '100%', padding: 20, boxSizing: 'border-box' }}>
-              <Router />
-              <FloatButton
-                shape='square'
-                description={(
-                  <Dropdown menu={{ items: ROUTER_MENUS }} >
-                    <div style={{ width: 40, height: 40, display: 'flex', justifyContent: 'center' }}><MenuOutlined rev="菜单" /></div>
-                  </Dropdown>
-                )}
-              />
-            </div>
-          </SchemaFieldProvider>
-        </SchemaComponentsProvider>
+        <SchemaFieldProvider value={SchemaField}>
+          <div className="App" style={{ minHeight: '100%', padding: 20, boxSizing: 'border-box' }}>
+            <Router />
+            <FloatButton
+              shape='square'
+              description={(
+                <Dropdown menu={{ items: ROUTER_MENUS }} >
+                  <div style={{ width: 40, height: 40, display: 'flex', justifyContent: 'center' }}><MenuOutlined rev="菜单" /></div>
+                </Dropdown>
+              )}
+            />
+          </div>
+        </SchemaFieldProvider>
       </ConfigStoreProvider>
     </ConfigProvider>
   );

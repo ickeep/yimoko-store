@@ -1,8 +1,8 @@
-import { Schema } from '@formily/react';
+import { RecursionField, Schema, observer } from '@formily/react';
 import { cloneElement, Component, FC, isValidElement, ReactNode } from 'react';
 import { isFragment, isValidElementType } from 'react-is';
 
-import { useSchemaComponents } from '../library';
+import { useSchemaComponents } from '../context/schema-components';
 import { judgeIsEmpty } from '../tools/tool';
 
 export interface TriggerProps extends React.HTMLAttributes<unknown> {
@@ -22,9 +22,8 @@ export interface TriggerProps extends React.HTMLAttributes<unknown> {
 }
 
 // eslint-disable-next-line complexity
-export const Trigger = (props: TriggerProps) => {
+export const Trigger: FC<TriggerProps> = observer((props) => {
   const { onTrig, trigEvent = 'onClick', children, text, component, ...args } = props;
-
   const schemaComponents = useSchemaComponents();
 
   const eventProps: Record<string, any> = {
@@ -66,13 +65,40 @@ export const Trigger = (props: TriggerProps) => {
         const { schema } = oldProps;
         if (!schema['x-decorator']) {
           schema['x-decorator'] = 'Trigger';
-          schema['x-decorator-props'] = { ...props, ...schema['x-decorator-props'] };
+        }
+        if (schema['x-decorator'] = 'Trigger') {
+          schema['x-decorator-props'] = { ...props, ...schema['x-decorator-props'], children: undefined };
         }
         return node;
       }
 
+      // eslint-disable-next-line eqeqeq
+      if (node.type == RecursionField) {
+        const nodeProps = node.props as any;
+        return (
+          <RecursionField
+            {...nodeProps}
+            // name = text 强制更新  RecursionField
+            name={text}
+            schema={{
+              type: 'void',
+              properties: {
+                trigger: {
+                  type: 'void',
+                  'x-decorator': 'Trigger',
+                  'x-decorator-props': { ...props, children: undefined },
+                  properties: {
+                    [nodeProps.name]: nodeProps.schema,
+                  },
+                },
+              },
+            }}
+          />
+        );
+      }
+
       if (oldProps?.children === undefined) {
-        nodeProps.children = text;
+        nodeProps.children = props.text;
       }
       return cloneElement(node, { ...nodeProps });
     }
@@ -81,10 +107,10 @@ export const Trigger = (props: TriggerProps) => {
 
   const renderChildren = handleChildren(children);
 
-
   if (!['string', 'undefined'].includes(typeof renderChildren)) {
     return <>{renderChildren}</>;
   }
+
 
   const cProps = { ...args, ...eventProps, children: children ?? text };
 
@@ -92,13 +118,13 @@ export const Trigger = (props: TriggerProps) => {
     let C: any;
     if (typeof component === 'string') {
       C = schemaComponents?.[component];
-    } else if (isValidElementType(component)) {
+    } else {
       C = component;
     };
-    if (C) {
+    if (isValidElementType(component)) {
       return <C {...cProps} />;
     }
   }
 
   return <span {...cProps} />;
-};
+});
