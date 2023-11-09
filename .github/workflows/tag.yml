@@ -20,29 +20,22 @@ jobs:
         # - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
-
-  # 创建 release
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/create-release@v1
+      # 创建 release
+      - name: Create Release
         id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.HUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           # 根据提交信息自动生成 release 内容
-          # 获取新的贡献者列表
           body: |
-            ${{ steps.build.outputs.stdout }}
-            ${{ steps.build.outputs.stderr }}
+            ${{ steps.changelog.outputs.changelog }}
+            ${{ steps.contributors.outputs.contributors }}
           draft: false
           prerelease: false
-      - name: ls
-        run: ls -al
+      # 上传 release 资源
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
@@ -51,6 +44,6 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           # 根目录的 dist 文件夹下的所有文件
-          asset_path: dist
+          asset_path: ./dist/*
           asset_name: ${{ github.ref }}
           asset_content_type: application/zip
