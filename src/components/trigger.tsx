@@ -66,7 +66,7 @@ export const Trigger: FC<TriggerProps> = observer((props) => {
         if (!schema['x-decorator']) {
           schema['x-decorator'] = 'Trigger';
         }
-        if (schema['x-decorator'] = 'Trigger') {
+        if (schema['x-decorator'] === 'Trigger') {
           schema['x-decorator-props'] = { ...props, ...schema['x-decorator-props'], children: undefined };
         }
         return node;

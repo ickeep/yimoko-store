@@ -4,7 +4,7 @@ import { ComponentType } from 'react';
 
 import { useSchemaComponents } from './schema-components';
 
-const NameConsumer = observer(({ c, cs }: { c: string, cs?: any }) => {
+const NameConsumer = observer(({ c }: { c: string, cs?: any }) => {
   const components = useSchemaComponents();
   const C = components?.[c] as ComponentType;
 
