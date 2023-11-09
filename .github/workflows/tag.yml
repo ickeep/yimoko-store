@@ -39,6 +39,9 @@ jobs:
       # 查看当前文件
       - name: List files
         run: ls -all
+      # 生成 dist zip 包
+      - name: Zip dist
+        run: zip -r dist.zip dist
       # 上传 release 资源
       - name: Upload Release Asset
         id: upload-release-asset
@@ -47,6 +50,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.HUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist
+          asset_path: ./dist.zip
           asset_name: ${{ github.ref }}
           asset_content_type: application/zip
