@@ -17,7 +17,7 @@ jobs:
       - run: npm install --global pnpm
       - run: pnpm i
       - run: npm run library
-        # - run: npm publish
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
       # 创建 release
