@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 // 小程序不支持 new Function eval, 所以需要自己实现一个 compiler
-// 当前只支持简单的表达式计算，不支持函数及函数调用
+// 当前只支持取值和简单的表达式计算，不支持函数及函数调用
 // 支持基础的计算 + - * / %
 // 支持基础的比较/逻辑 > < >= <= == === != !== && || !
 // 支持使用()改变优先级
@@ -18,13 +18,25 @@ export const compiler = (expression: string, scope = {}) => {
       return Number(newVal);
     }
 
+    // 判断是否是字符串 被 "" 或者 '' 包裹 正则判断,并且中间不包含 "" 或者 ''
+    if (/^"[^"]+"$/.test(newVal) || /^'[^']+'$/.test(newVal)) {
+      return newVal.slice(1, -1);
+    }
+    // 判断是否是 boolean
+    if (newVal === 'true') {
+      return true;
+    }
+    if (newVal === 'false') {
+      return false;
+    }
+
     // 不存在操作符，直接返回
     if (!isExpression(newVal)) {
       // 判断是否是临时 key
       if (isTmpKey(newVal)) {
         return tempObj[newVal];
       }
-      return get(scope, newVal, newVal);
+      return get(scope, newVal);
     }
 
     // 匹配括号,不带 g 采用递归的逐个处理
@@ -50,26 +62,32 @@ export const compiler = (expression: string, scope = {}) => {
       }
       return key;
     });
+
     // 判断是否还有三元表达式，有则递归处理
-    if (newVal.includes('?')) {
+    if (ternaryOp.some(v => newVal.includes(v))) {
+      // 当只有 : 时，说明是在多个三元表达式,部分不需要运算 直接返回第一个即可
+      if (!newVal.includes('?')) {
+        return getValueByExp(newVal.split(':')[0]);
+      }
       return getValueByExp(newVal);
     }
 
     // 匹配左侧操作符
-    // 支持的左侧操作符为 ! ++ --
-    newVal = newVal.replace(getLeftReg(['!', '++', '--'], true), (match, p1, p2) => {
+    // 支持的左侧操作符为 !
+    newVal = newVal.replace(getLeftReg(['!'], true), (match, p1, p2) => {
       const key = crKey(match);
-      tempObj[key] = calculate(p1, getValueByExp(p2));
+      const v1 = getValueByExp(p2);
+      tempObj[key] = calculate(p1, v1);
       return key;
     });
 
     // 匹配右侧操作符
     // 支持的右侧操作符为 ++ --
-    newVal = newVal.replace(getRightReg(['++', '--'], true), (match, p1, p2) => {
-      const key = crKey(match);
-      tempObj[key] = calculateRight(p2, getValueByExp(p1));
-      return key;
-    });
+    // newVal = newVal.replace(getRightReg(['++', '--'], true), (match, p1, p2) => {
+    //   const key = crKey(match);
+    //   tempObj[key] = calculateRight(p2, getValueByExp(p1));
+    //   return key;
+    // });
 
     // 匹配  * / % 运算符 不带 g 采用递归的逐个处理
     const mathOperators = ['*', '/', '%'];
@@ -78,6 +96,7 @@ export const compiler = (expression: string, scope = {}) => {
       tempObj[key] = calculate(p2, getValueByExp(p1), getValueByExp(p3));
       return key;
     });
+
     // 判断是否还有 * / %，有则递归处理
     if (mathOperators.some(op => newVal.includes(op))) {
       return getValueByExp(newVal);
@@ -150,12 +169,7 @@ const opExpStr = `(${[...opArr, ...ternaryOp].map(toRegStr).join('|')})`;
 const opExp = new RegExp(opExpStr, 'g');
 
 // 判断是否是表达式
-export const isExpression = (expression: string) => {
-  if (!expression) {
-    return false;
-  }
-  return [...opArr, ...ternaryOp].some(op => expression.includes(op));
-};
+export const isExpression = (expression: string) => [...opArr, ...ternaryOp].some(op => expression.includes(op));
 
 // 获取匹配两边非操作符的正则
 const getBothReg = (op: string[], isGlobal = false) => {
@@ -168,10 +182,10 @@ const getLeftReg = (op: string[], isGlobal = false) => {
   return new RegExp(regStr, isGlobal ? 'g' : '');
 };
 // 获取匹配右边操作符的正则
-const getRightReg = (op: string[], isGlobal = false) => {
-  const regStr = `(${notOpExpStr})(${op.map(toRegStr).join('|')})`;
-  return new RegExp(regStr, isGlobal ? 'g' : '');
-};
+// const getRightReg = (op: string[], isGlobal = false) => {
+//   const regStr = `(${notOpExpStr})(${op.map(toRegStr).join('|')})`;
+//   return new RegExp(regStr, isGlobal ? 'g' : '');
+// };
 
 
 // TODO key 的相关逻辑可进一步优化
@@ -195,12 +209,12 @@ function calculate(op: string, a: any, b?: any) {
   switch (op) {
     case '!':
       return !a;
-    case '++':
-      // eslint-disable-next-line no-plusplus, no-param-reassign
-      return ++a;
-    case '--':
-      // eslint-disable-next-line no-plusplus, no-param-reassign
-      return --a;
+    // case '++':
+    // eslint-disable-next-line no-plusplus, no-param-reassign
+    // return ++a;
+    // case '--':
+    // eslint-disable-next-line no-plusplus, no-param-reassign
+    // return --a;
     case '+':
       return a + b;
     case '-':
@@ -239,15 +253,15 @@ function calculate(op: string, a: any, b?: any) {
 }
 
 // 右侧运算
-function calculateRight(op: string, a: any) {
-  switch (op) {
-    case '++':
-      // eslint-disable-next-line no-plusplus, no-param-reassign
-      return a++;
-    case '--':
-      // eslint-disable-next-line no-plusplus, no-param-reassign
-      return a--;
-    default:
-      return a;
-  }
-}
+// function calculateRight(op: string, a: any) {
+//   switch (op) {
+//     case '++':
+//       // eslint-disable-next-line no-plusplus, no-param-reassign
+//       return a++;
+//     case '--':
+//       // eslint-disable-next-line no-plusplus, no-param-reassign
+//       return a--;
+//     default:
+//       return a;
+//   }
+// }

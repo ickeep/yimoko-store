@@ -55,6 +55,7 @@ export * from './store/root';
 export * from './store/theme';
 
 export * from './tools/api';
+export * from './tools/compiler';
 export * from './tools/http';
 export * from './tools/num';
 export * from './tools/options';
