@@ -14,8 +14,8 @@ import {
 import { ErrorContent } from './error-content';
 import { ROUTER_MENUS, Router } from './router';
 
-
 const components = {
+  ErrorContent,
   StorePageContent,
   RedirectListData,
   ArrayRender,
@@ -25,7 +25,9 @@ const components = {
   Input: (props: any) => <Input {...props} onChange={e => props?.onChange?.(e.target.value, e)} />,
   InputNumber,
   Button,
+  Skeleton,
   Switch: ({ value, ...rest }: any) => <Switch {...rest} checked={value} />,
+  Loading: ({ loading, ...rest }: any) => <Spin {...rest} spinning={loading} />,
 };
 
 const SchemaField = createSchemaField({ components });
@@ -34,7 +36,6 @@ export const defaultConfig = {
   // static: staticConfig,
   // version: versionConfig,
   // deep: deepConfig,
-
   versionKey: '',
   apiHost: '',
   uploadAPI: '',
@@ -43,7 +44,6 @@ export const defaultConfig = {
 };
 
 export type IConfig = typeof defaultConfig;
-
 
 // eslint-disable-next-line complexity
 export const notifier: INotifier = (type, msg, options) => {
@@ -76,14 +76,9 @@ export const configStore: ConfigStore<typeof defaultConfig> = new ConfigStore(
     notifier,
     apiExecutor: httpRequest,
     useRouter,
-    components: {
-      Loading: ({ loading, ...rest }) => <Spin {...rest} spinning={loading} />,
-      Skeleton,
-      ErrorContent,
-    },
+    components,
   },
 );
-
 
 function App() {
   return (
@@ -116,7 +111,6 @@ const titleMap = {
   confirm: '确认',
   loading: '加载',
 };
-
 
 export default App;
 

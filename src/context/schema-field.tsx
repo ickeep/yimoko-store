@@ -2,7 +2,7 @@ import { createSchemaField, ISchemaFieldProps, SchemaComponentsContext, SchemaRe
 import { createContext, FC, useContext } from 'react';
 
 import { useDeepMemo } from '../hooks/use-deep-memo';
-import { judgeIsEmpty } from '../library';
+import { judgeIsEmpty, useConfigStore } from '../library';
 
 
 const SchemaField = createSchemaField();
@@ -17,11 +17,12 @@ export const useSchemaField = <Components extends SchemaReactComponents = any>(c
   const df = useContext(SchemaFieldContext);
   const dfComponents = useContext(SchemaComponentsContext);
   const oldScope = useExpressionScope();
+  const configComponents = useConfigStore().components as SchemaReactComponents;
 
   return useDeepMemo(() => {
     if (judgeIsEmpty(components) && judgeIsEmpty(scope) && df) {
       return df;
     }
-    return createSchemaField({ components: { ...dfComponents, ...components }, scope: { ...oldScope, ...scope } });
+    return createSchemaField({ components: { ...configComponents, ...dfComponents, ...components }, scope: { ...oldScope, ...scope } });
   }, [components, scope]);
 };
