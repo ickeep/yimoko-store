@@ -7,7 +7,7 @@ import { judgeIsEmpty } from '../tools/tool';
 export const useChildrenNullishCoalescing = (children?: ReactNode) => {
   const { properties, name } = useFieldSchema() ?? {};
   return useMemo(() => {
-    if (!(children !== null || children !== undefined) || judgeIsEmpty(properties)) {
+    if (!(children === null || children === undefined) || judgeIsEmpty(properties)) {
       return children;
     }
     return <RecursionField name={name} onlyRenderProperties schema={{ type: 'void', properties }} />;
