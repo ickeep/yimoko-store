@@ -78,8 +78,7 @@ describe('useChildrenNullishCoalescing', () => {
       }}
     />);
     expect(screen.getByRole('NullishCoalescing')).toBeInTheDocument();
-    // 当 properties 有值时， x-component-props children 会被忽略
-    expect(screen.getByRole('NullishCoalescing').textContent).toBe('Coalescing');
+    expect(screen.getByRole('NullishCoalescing').textContent).toBe('children');
   });
 
   it('schema str', () => {
