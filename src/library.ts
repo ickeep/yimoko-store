@@ -24,6 +24,7 @@ export * from './context/schema-field';
 export * from './hoc/schema-children';
 export * from './hoc/value-children';
 
+export * from './hooks/use-additional-node';
 export * from './hooks/use-api-options';
 export * from './hooks/use-api-search-options';
 export * from './hooks/use-base-store';
