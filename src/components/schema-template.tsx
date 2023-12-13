@@ -17,7 +17,6 @@ export const SchemaTemplate = (props: SchemaTemplateProps) => {
   const fieldSchema = useFieldSchema()?.toJSON();
   const { properties, 'x-decorator': decorator } = fieldSchema ?? {};
 
-
   const childrenSchema = useMemo(() => {
     if (decorator !== 'SchemaTemplate' && properties) {
       return { properties };

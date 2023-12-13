@@ -2,10 +2,15 @@
   "name": "@yimoko/store",
   "version": "2.0.7",
   "private": false,
-  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ickeep/yimoko-store.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "ickeep",
+    "email": "i@ickeep.com",
+    "url": "https://github.com/ickeep"
   },
   "exports": {
     ".": {
@@ -23,9 +28,9 @@
     "README.md"
   ],
   "scripts": {
-    "lint": "eslint ./src --fix --ext ts,tsx",
     "build": "react-scripts build",
     "library": "vite build",
+    "lint": "eslint ./src --fix --ext ts,tsx",
     "start": "react-scripts start",
     "test:unit": "react-scripts test  --coverage --watchAll=false",
     "test:watch": "react-scripts test --coverage --watchAll"
@@ -91,6 +96,7 @@
     "web-vitals": "^2.1.4"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

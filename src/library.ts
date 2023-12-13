@@ -16,6 +16,7 @@ export * from './components/schema-template';
 export * from './components/store-bind-router';
 export * from './components/store-dict';
 export * from './components/trigger';
+export * from './components/index';
 
 export * from './context/root';
 export * from './context/schema-components';

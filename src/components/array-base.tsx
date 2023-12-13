@@ -3,6 +3,7 @@ import { useField, useFieldSchema, Schema, RecursionField, RecordsScope, RecordS
 import { clone, omitBy } from 'lodash-es';
 import { Key, ReactElement, createContext, useContext, useMemo } from 'react';
 
+import { useChildrenNullishCoalescing } from '../hooks/use-children-nullish-coalescing';
 import { judgeIsEmpty } from '../tools/tool';
 
 const ArrayBaseContext = createContext<IArrayBaseContext>(null as any);
@@ -90,17 +91,7 @@ export const ArrayRender: <T>(props: IArrayRenderProps<T>) => ReactElement<any, 
   const field = useField();
   const schema = useFieldSchema();
   const { items } = schema ?? {};
-
-  const curChildren = useMemo(() => {
-    if (children !== undefined) {
-      return children;
-    }
-    if (!isRenderProperties || judgeIsEmpty(schema?.properties)) {
-      return null;
-    }
-    // 默认 schema type 为 array 不渲染 properties, 表格这里特意做加强
-    return <RecursionField name={schema?.name} onlyRenderProperties schema={{ type: 'void', properties: schema.properties }} />;
-  }, [children, isRenderProperties, schema?.name, schema?.properties]);
+  const curChildren = useChildrenNullishCoalescing(children, isRenderProperties);
 
   return (
     <RecordsScope getRecords={() => curData}>
