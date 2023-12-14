@@ -3,7 +3,7 @@ import { ReactNode, useMemo } from 'react';
 
 import { judgeIsEmpty } from '../tools/tool';
 
-export const useAdditionalNode = (propName: string, node?: ReactNode) => {
+export const useAdditionalNode: <T = ReactNode> (propName: string, node?: T) => T | ReactNode = (propName, node) => {
   const { name, additionalProperties } = useFieldSchema() ?? {};
   const schema = additionalProperties?.properties?.[propName];
 

@@ -3,6 +3,7 @@ import { DataNode } from 'antd/es/tree';
 import { Link, Route, Routes } from 'react-router-dom';
 
 import { ArrayBaseDemo } from './components/array-base';
+import { SpaceDemo } from './components/layout/space';
 import { AddPageDemo } from './components/page/add';
 
 import { DetailPageDemo } from './components/page/detail';
@@ -26,6 +27,11 @@ export const ROUTES_CONF: Array<IRouteConf> = [
           { path: 'detail', name: '详情', component: DetailPageDemo },
           { path: 'edit', name: '编辑', component: EditPageDemo },
           { path: 'list', name: '列表', component: ListPageDemo },
+        ],
+      },
+      {
+        path: 'layout', name: '布局', children: [
+          { path: 'space', name: '间距', component: SpaceDemo },
         ],
       },
       { path: 'trigger', component: TriggerDemo, name: '触发器 - Trigger' },
