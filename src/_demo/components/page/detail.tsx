@@ -1,4 +1,6 @@
 
+import React from 'react';
+
 import { DetailPage } from '../../../library';
 
 export const DetailPageDemo = () => (

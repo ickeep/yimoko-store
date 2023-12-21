@@ -1,6 +1,6 @@
 import { render, renderHook, screen } from '@testing-library/react';
 
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import { StorePage } from '../library';
 

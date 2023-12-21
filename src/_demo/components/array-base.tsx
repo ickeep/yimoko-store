@@ -2,7 +2,7 @@
 import { RecordScope, RecordsScope, RecursionField, Schema, useField, useFieldSchema } from '@formily/react';
 import { observable } from '@formily/reactive';
 import { Button, Table, TableProps } from 'antd';
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { getItemPropsBySchema, judgeIsEmpty, useStore, ArrayBase, withArrayComponent, withArrayItemComponent, StorePage } from '../../library';
 

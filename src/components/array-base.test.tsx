@@ -1,5 +1,7 @@
 import { screen, render, fireEvent } from '@testing-library/react';
 
+import React from 'react';
+
 import { BaseStore } from '../store/base';
 
 import { ArrayBase, ArrayRender, withArrayComponent, withArrayItemComponent } from './array-base';

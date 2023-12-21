@@ -1,6 +1,6 @@
 import { observer } from '@formily/reactive-react';
 import { screen, render, renderHook } from '@testing-library/react';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import { BaseStore } from './base';
 import { BoxContentProvider, BoxContentRender, BoxStore, useBoxBindContentStore, useBoxContent, useBoxStore } from './box';

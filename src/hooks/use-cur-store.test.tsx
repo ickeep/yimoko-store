@@ -1,6 +1,8 @@
 import { observer } from '@formily/react';
 import { render, screen, renderHook } from '@testing-library/react';
 
+import React from 'react';
+
 import { SchemaPage } from '../components/schema-page';
 import { BaseStore } from '../store/base';
 

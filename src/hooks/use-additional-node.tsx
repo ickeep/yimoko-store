@@ -1,5 +1,5 @@
 import { RecursionField, useFieldSchema } from '@formily/react';
-import { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 
 import { judgeIsEmpty } from '../tools/tool';
 

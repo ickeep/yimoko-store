@@ -1,6 +1,8 @@
 import { observer } from '@formily/react';
 import { act, render, screen, renderHook } from '@testing-library/react';
 
+import React from 'react';
+
 import { RootStore } from '../store/root';
 
 import { RootProvider, RootConsumer, useUser as useUser, useRoot, useMenus, useData } from './root';

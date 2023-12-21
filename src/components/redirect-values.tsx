@@ -1,6 +1,6 @@
 import { createForm, IFormProps } from '@formily/core';
 import { observer, useFieldSchema } from '@formily/react';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { useSchemaField } from '../context/schema-field';
 

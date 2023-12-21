@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { ListPage } from '../../../library';
 
 export const ListPageDemo = () => (

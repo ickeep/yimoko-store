@@ -1,6 +1,6 @@
 import { IFormProps, createForm, Form } from '@formily/core';
 import { ExpressionScope, ISchema, SchemaReactComponents } from '@formily/react';
-import { Key, useEffect, useMemo } from 'react';
+import React, { Key, useEffect, useMemo } from 'react';
 
 import { SchemaFieldProvider, useSchemaField } from '../context/schema-field';
 

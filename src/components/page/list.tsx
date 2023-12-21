@@ -1,5 +1,5 @@
 import { observer } from '@formily/react';
-import { Key, ReactElement } from 'react';
+import React, { Key, ReactElement } from 'react';
 
 import { useDeepMemo } from '../../hooks/use-deep-memo';
 import { ListStore } from '../../library';

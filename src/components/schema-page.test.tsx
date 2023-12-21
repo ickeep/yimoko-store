@@ -1,6 +1,8 @@
 import { createForm } from '@formily/core';
 import { render, screen } from '@testing-library/react';
 
+import React from 'react';
+
 import { BaseStore } from '../store/base';
 import { JSONStringify } from '../tools/tool';
 

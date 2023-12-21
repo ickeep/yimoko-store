@@ -1,5 +1,5 @@
 import { RecursionField, Schema } from '@formily/react';
-import { Key } from 'react';
+import React, { Key } from 'react';
 
 import { judgeIsEmpty } from './tool';
 

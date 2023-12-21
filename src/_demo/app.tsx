@@ -3,6 +3,7 @@ import { createSchemaField } from '@formily/react';
 import { FloatButton, Dropdown, ConfigProvider, notification, Spin, Skeleton, Input, Button, Typography, Form, InputNumber, Switch } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 
+import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import {

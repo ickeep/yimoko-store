@@ -1,5 +1,5 @@
 import { observer, RecursionField, Schema } from '@formily/react';
-import { cloneElement, Component, FC, isValidElement, ReactNode } from 'react';
+import React, { cloneElement, Component, FC, isValidElement, ReactNode } from 'react';
 import { isFragment, isValidElementType } from 'react-is';
 
 import { useSchemaComponents } from '../context/schema-components';

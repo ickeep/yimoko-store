@@ -1,5 +1,5 @@
 import { ISchema, SchemaReactComponents, useFieldSchema } from '@formily/react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { useSchemaField } from '../context/schema-field';
 

@@ -1,4 +1,4 @@
-import { isValidElement, Key } from 'react';
+import React, { isValidElement, Key } from 'react';
 import { isValidElementType } from 'react-is';
 
 import { JSONStringify, judgeIsEmpty } from '../tools/tool';

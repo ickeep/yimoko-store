@@ -1,6 +1,6 @@
 import { createForm, IFormProps } from '@formily/core';
 import { SchemaReactComponents, ISchema, observer } from '@formily/react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { useRoot } from '../../context/root';
 import { useStore } from '../../hooks/use-store';

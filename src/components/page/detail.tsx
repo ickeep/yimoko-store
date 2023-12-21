@@ -1,6 +1,6 @@
 import { observer } from '@formily/react';
 import { cloneDeep, pick } from 'lodash-es';
-import { Key, ReactElement, useMemo } from 'react';
+import React, { Key, ReactElement, useMemo } from 'react';
 
 import { useDeepMemo } from '../../hooks/use-deep-memo';
 import { IStoreConfig } from '../../store';

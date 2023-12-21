@@ -1,7 +1,7 @@
 import { observer } from '@formily/reactive-react';
 import { Button, Typography, message, Modal as AModal, ModalProps, Avatar, Tabs, Input } from 'antd';
 
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { StorePage, Trigger, TriggerProps, useChildrenNullishCoalescing, useStore } from '../../library';
 

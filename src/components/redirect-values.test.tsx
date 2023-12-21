@@ -2,6 +2,8 @@ import { createForm } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import { render, screen } from '@testing-library/react';
 
+import React from 'react';
+
 import { SchemaFieldProvider } from '../context/schema-field';
 import { BaseStore } from '../store/base';
 

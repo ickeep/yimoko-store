@@ -2,6 +2,8 @@ import { createForm } from '@formily/core';
 import { createSchemaField } from '@formily/react';
 import { render, screen } from '@testing-library/react';
 
+import React from 'react';
+
 import { SchemaBox } from './schema-box';
 
 describe('SchemaBox', () => {
