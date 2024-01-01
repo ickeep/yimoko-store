@@ -40,13 +40,13 @@ export const httpPatch: IHTTPPost = (url, data, config) => httpRequest({ ...conf
 
 // 处理请求返回的数据
 export const handleResponse = <T = Record<Key, any>>(response: AxiosResponse<T>): IHTTPResponse<T> => {
-  const { data, status, statusText } = response;
+  const { status, statusText } = response;
   const resData = getResponseData(response);
   return {
     ...response,
+    ...resData,
     code: typeof resData?.code === 'number' ? resData?.code : getCodeByStatus(status),
     msg: resData?.msg ?? resData?.message ?? statusText,
-    data: resData.data ?? data,
   };
 };
 
