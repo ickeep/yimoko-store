@@ -5,10 +5,16 @@ import { getCodeByStatus, IHTTPCode, IHTTPResponse } from './api';
 
 export const http = axios.create();
 
-// 将 response 处理为统一的 { code, data, message } 格式
+// 将 response 处理为统一的 { code, data, msg } 格式
 export const httpRequest: IHTTPRequest = async (config) => {
   try {
-    const response = await http(config);
+    const { method, data, ...rest } = config;
+    let curData = data as Record<Key, any>;
+    // post data 为空时 会导致 content-type 为 null
+    if (method?.toLowerCase() === 'post') {
+      curData = data ?? {};
+    }
+    const response = await http({ method, data: curData, ...rest });
     return handleResponse(response);
   } catch (e: any) {
     const { response, ...args } = e;
@@ -34,13 +40,13 @@ export const httpPatch: IHTTPPost = (url, data, config) => httpRequest({ ...conf
 
 // 处理请求返回的数据
 export const handleResponse = <T = Record<Key, any>>(response: AxiosResponse<T>): IHTTPResponse<T> => {
-  const { data, status, statusText } = response;
+  const { status, statusText } = response;
   const resData = getResponseData(response);
   return {
     ...response,
+    ...resData,
     code: typeof resData?.code === 'number' ? resData?.code : getCodeByStatus(status),
-    msg: resData?.msg ?? statusText,
-    data: resData.data ?? data,
+    msg: resData?.msg ?? resData?.message ?? statusText,
   };
 };
 
@@ -48,7 +54,7 @@ export const handleResponse = <T = Record<Key, any>>(response: AxiosResponse<T>)
 // 获取 response data 适配 { code, msg, data } 格式 或者直接返回 response
 export const getResponseData = (response: AxiosResponse): Record<Key, any> => {
   const { data } = response;
-  return (typeof data?.code !== 'undefined' && (typeof data?.msg !== 'undefined' || typeof data?.data !== 'undefined')) ? data : response;
+  return (typeof data?.code !== 'undefined' && (typeof data?.msg !== 'undefined' || typeof data?.message !== 'undefined' || typeof data?.data !== 'undefined')) ? data : response;
 };
 
 export type IHTTPRequest = <R = any, P = any>(config: AxiosRequestConfig<P>) => Promise<IHTTPResponse<R, P>>;

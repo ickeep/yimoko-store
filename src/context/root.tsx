@@ -2,7 +2,9 @@ import { createContext, useContext } from 'react';
 
 import { RootStore } from '../store/root';
 
-export const RootContext = createContext(new RootStore());
+export const rootStore = new RootStore();
+
+export const RootContext = createContext(rootStore);
 
 export const RootProvider = RootContext.Provider;
 
