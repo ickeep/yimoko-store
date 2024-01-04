@@ -1,6 +1,6 @@
 import { createForm } from '@formily/core';
 import { act, render, renderHook } from '@testing-library/react';
-import { Key } from 'react';
+import React, { Key } from 'react';
 
 import { SchemaBox } from '../components/schema-box';
 import { IStore } from '../store';

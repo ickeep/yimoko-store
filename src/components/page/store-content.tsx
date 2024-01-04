@@ -1,5 +1,5 @@
 import { observer, useExpressionScope } from '@formily/react';
-import { Key, useMemo } from 'react';
+import React, { Key, useMemo } from 'react';
 
 import { IStore } from '../../store';
 import { useConfigComponents } from '../../store/config';

@@ -1,6 +1,6 @@
 import { observer } from '@formily/react';
 import { render, screen } from '@testing-library/react';
-import { ComponentType } from 'react';
+import React, { ComponentType } from 'react';
 
 import { useSchemaComponents } from './schema-components';
 

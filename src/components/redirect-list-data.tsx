@@ -1,6 +1,6 @@
 import { IFormProps } from '@formily/core';
 import { observer, useExpressionScope } from '@formily/react';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import { ListStore } from '../store/list';
 

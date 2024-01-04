@@ -3,7 +3,7 @@ import { fireEvent, render, renderHook, screen } from '@testing-library/react';
 
 import { Avatar, Button, Input, message, Modal as AModal, ModalProps, Typography } from 'antd';
 
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { useChildrenNullishCoalescing } from '../hooks/use-children-nullish-coalescing';
 

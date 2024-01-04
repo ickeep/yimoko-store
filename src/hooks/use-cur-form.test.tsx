@@ -2,6 +2,8 @@ import { createForm } from '@formily/core';
 import { observer } from '@formily/react';
 import { render, screen, renderHook } from '@testing-library/react';
 
+import React from 'react';
+
 import { SchemaBox } from '../components/schema-box';
 
 import { useCurForm } from './use-cur-form';

@@ -1,5 +1,7 @@
 import { render, screen, act } from '@testing-library/react';
 
+import React from 'react';
+
 import { ConfigStore, ConfigStoreProvider } from '../store/config';
 
 import { IKeys } from '../tools/options';

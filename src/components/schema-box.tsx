@@ -1,5 +1,6 @@
 import { Form, isForm } from '@formily/core';
 import { useParentForm, FormProvider, RecordScope } from '@formily/react';
+import React from 'react';
 
 export interface SchemaBoxProps {
   model?: Form

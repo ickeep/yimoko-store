@@ -1,7 +1,7 @@
 import { ArrayField } from '@formily/core';
 import { useField, useFieldSchema, Schema, RecursionField, RecordsScope, RecordScope, observer } from '@formily/react';
 import { clone, omitBy } from 'lodash-es';
-import { Key, ReactElement, createContext, useContext, useMemo } from 'react';
+import React, { Key, ReactElement, createContext, useContext, useMemo } from 'react';
 
 import { useChildrenNullishCoalescing } from '../hooks/use-children-nullish-coalescing';
 import { judgeIsEmpty } from '../tools/tool';

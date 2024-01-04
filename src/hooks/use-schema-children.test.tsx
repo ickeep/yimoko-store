@@ -1,6 +1,6 @@
 import { createSchemaField, ISchema } from '@formily/react';
 import { render, screen, renderHook } from '@testing-library/react';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import { SchemaPage } from '../components/schema-page';
 import { SchemaFieldProvider } from '../context/schema-field';

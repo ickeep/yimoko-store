@@ -1,4 +1,6 @@
 
+import React from 'react';
+
 import { AddPage } from '../../../library';
 
 export const AddPageDemo = () => (

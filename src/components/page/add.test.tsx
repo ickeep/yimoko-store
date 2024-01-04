@@ -1,5 +1,7 @@
 import { render } from '@testing-library/react';
 
+import React from 'react';
+
 import { OperateStore } from '../../store/operate';
 
 import { AddPage } from './add';

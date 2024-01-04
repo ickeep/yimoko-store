@@ -1,5 +1,7 @@
 import { render } from '@testing-library/react';
 
+import React from 'react';
+
 import { BaseStore } from '../../store/base';
 import { ConfigStore, ConfigStoreProvider } from '../../store/config';
 

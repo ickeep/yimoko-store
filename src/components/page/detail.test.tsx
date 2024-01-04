@@ -1,5 +1,7 @@
 import { act, render } from '@testing-library/react';
 
+import React from 'react';
+
 import { BaseStore } from '../../store/base';
 
 import { DetailPage } from './detail';
