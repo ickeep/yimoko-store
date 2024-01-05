@@ -1,4 +1,5 @@
 import { observer } from '@formily/react';
+import { cloneDeep } from 'lodash-es';
 import React, { Key, ReactElement } from 'react';
 
 import { useDeepMemo } from '../../hooks/use-deep-memo';
@@ -15,7 +16,7 @@ export const EditPage: <T extends object = Record<Key, any>, R extends object = 
     values, dataStore, storeConfig, store, scope,
     onSuccess, onFail, parentStore, isRefreshParent, jumpOnSuccess, ...rest
   } = props;
-  const { fieldsConfig = {}, api } = (storeConfig ?? {}) as PageStoreConfig<any>;
+  const { fieldsConfig = {}, api, defaultValues, idKey = 'id' } = (storeConfig ?? {}) as PageStoreConfig<any>;
   const curScope = useDeepMemo(() => ({ $config: storeConfig, ...scope }), [storeConfig, scope]);
   const runAfter = useOperateRunAfter(props);
 
@@ -26,13 +27,18 @@ export const EditPage: <T extends object = Record<Key, any>, R extends object = 
       judgeIsEmpty(store.fieldsConfig) && (store.fieldsConfig = fieldsConfig);
       return store;
     }
-    return new OperateStore({
+    let curDefaultValues = store?.defaultValues ?? {};
+    if (!judgeIsEmpty(defaultValues)) {
+      curDefaultValues = { [idKey]: '', ...cloneDeep(defaultValues), ...curDefaultValues };
+    }
+    return new OperateStore<any>({
       api: api?.edit,
       fieldsConfig,
       ...store,
+      defaultValues: curDefaultValues,
       runAfter,
     });
-  }, [api, fieldsConfig, store, runAfter]);
+  }, [api, fieldsConfig, store, runAfter, defaultValues, idKey]);
 
   if (!judgeIsEmpty(values)) {
     return (<ValuesPage  {...rest} values={values} store={curStore} scope={curScope} />);

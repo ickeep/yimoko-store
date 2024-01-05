@@ -1,4 +1,5 @@
 import { observer } from '@formily/react';
+import { cloneDeep } from 'lodash-es';
 import React, { Key, ReactElement } from 'react';
 
 import { useDeepMemo } from '../../hooks/use-deep-memo';
@@ -12,7 +13,7 @@ import { StorePageProps, StorePage } from './store';
 
 export const AddPage: <T extends object = Record<Key, any>, R extends object = any>(props: OperatePageProps<T, R>) => ReactElement<any, any> | null = observer((props) => {
   const { storeConfig, store, scope, jumpOnSuccess, parentStore, isRefreshParent, onSuccess, onFail, ...rest } = props;
-  const { fieldsConfig = {}, api } = (storeConfig ?? {}) as PageStoreConfig<any>;
+  const { fieldsConfig = {}, api, defaultValues } = (storeConfig ?? {}) as PageStoreConfig<any>;
 
   const runAfter = useOperateRunAfter(props);
 
@@ -25,13 +26,18 @@ export const AddPage: <T extends object = Record<Key, any>, R extends object = a
       judgeIsEmpty(store.fieldsConfig) && (store.fieldsConfig = fieldsConfig);
       return store;
     }
+    let curDefaultValues = store?.defaultValues ?? {};
+    if (!judgeIsEmpty(defaultValues)) {
+      curDefaultValues = { ...cloneDeep(defaultValues), ...curDefaultValues };
+    }
     return new OperateStore<any>({
       api: api?.add,
       fieldsConfig,
       ...store,
+      defaultValues: curDefaultValues,
       runAfter,
     });
-  }, [api, fieldsConfig, store, runAfter]);
+  }, [api, fieldsConfig, store, runAfter, defaultValues]);
 
   const curProps: StorePageProps<any, any> = useDeepMemo(() => ({ ...rest, scope: curScope, store: curStore }), [curScope, curStore, rest]);
 

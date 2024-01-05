@@ -4,12 +4,14 @@ import React from 'react';
 import { AddPage } from '../../../library';
 
 export const AddPageDemo = () => (
-  <AddPage
+  <AddPage<any>
     storeConfig={{
-      fieldsConfig: {},
+      fieldsConfig: {
+      },
       api: {
         add: { method: 'get', url: '/api/add.json' },
       },
+      defaultValues: { age: 4 },
     }}
     store={{
       defaultValues: { name: 'add' },
@@ -28,11 +30,17 @@ export const AddPageDemo = () => (
             children: 'Add Page Demo',
           },
         },
+        age: {
+          type: 'number',
+          title: '年龄',
+          'x-component': 'InputNumber',
+        },
         name: {
           type: 'string',
           title: '姓名',
           'x-component': 'Input',
         },
+
         submit: {
           type: 'void',
           title: '提交',

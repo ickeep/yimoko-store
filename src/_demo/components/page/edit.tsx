@@ -3,9 +3,10 @@ import React from 'react';
 import { EditPage } from '../../../library';
 
 export const EditPageDemo = () => (
-  <EditPage
+  <EditPage<any>
     storeConfig={{
       fieldsConfig: {},
+      defaultValues: { id: '', name: 'edit' },
       api: {
         edit: { url: '/api/edit.json' },
         detail: { url: '/api/detail.json' },

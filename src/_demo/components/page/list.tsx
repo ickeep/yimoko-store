@@ -9,9 +9,10 @@ export const ListPageDemo = () => (
       api: {
         list: { url: '/api/list.json' },
       },
+      defaultQueryValues: { name: 'list' },
     }}
     store={{
-      defaultValues: { name: '' },
+      // defaultValues: { name: '' },
       isBindRouter: true,
       api: () => new Promise(resolve => setTimeout(() => resolve({ code: 0, msg: '编辑成功', data: { page: 1, data: [{ name: '张三' }, { name: '李四' }] } }), 1000)),
     }}

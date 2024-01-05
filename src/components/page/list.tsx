@@ -1,4 +1,5 @@
 import { observer } from '@formily/react';
+import { cloneDeep } from 'lodash-es';
 import React, { Key, ReactElement } from 'react';
 
 import { useDeepMemo } from '../../hooks/use-deep-memo';
@@ -17,7 +18,7 @@ export interface ListPageProps<V extends object = IStoreValues, R extends object
 
 export const ListPage: <T extends object = Record<Key, any>, R extends object = any>(props: ListPageProps<T, R>) => ReactElement<any, any> | null = observer((props) => {
   const { storeConfig, store, scope, ...rest } = props;
-  const { fieldsConfig, api } = (storeConfig ?? {}) as PageStoreConfig<any>;
+  const { fieldsConfig, api, defaultQueryValues } = (storeConfig ?? {}) as PageStoreConfig<any>;
 
   const curStore = useDeepMemo(() => {
     if (store instanceof BaseStore) {
@@ -25,12 +26,18 @@ export const ListPage: <T extends object = Record<Key, any>, R extends object = 
       judgeIsEmpty(store.fieldsConfig) && (store.fieldsConfig = fieldsConfig);
       return store;
     }
+
+    let curDefaultValues = store?.defaultValues ?? {};
+    if (!judgeIsEmpty(defaultQueryValues)) {
+      curDefaultValues = { ...cloneDeep(defaultQueryValues), ...curDefaultValues };
+    }
     return new ListStore({
       api: api?.list,
       fieldsConfig,
       ...store,
+      defaultValues: curDefaultValues,
     });
-  }, [api, fieldsConfig, store]);
+  }, [api, fieldsConfig, store, defaultQueryValues]);
 
   const curScope = useDeepMemo(() => ({
     $config: storeConfig,

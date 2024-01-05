@@ -94,6 +94,12 @@ export interface PageStoreConfig<V extends object = Record<Key, any>> {
   map?: Record<Key, Record<Key, any>>
   options?: Record<Key, IOptions<any>>
   components?: IConfigComponents
+
+  // 默认值 用于添加/编辑页面 编辑会多一个 idKey
+  defaultValues?: Partial<V>
+  // 查询默认参数的值 用于列表/查询页面
+  defaultQueryValues?: Partial<V> & Record<Key, any>
+  // 操作默认参数的值 用于操作页面 通用使用 idKey
 }
 
 export interface OperatePageProps<T extends object = Record<Key, any>, R extends object = any> extends Omit<StorePageProps, 'store'> {
