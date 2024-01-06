@@ -15,10 +15,10 @@ describe('useStoreBindRouter', () => {
     useStoreBindRouter(store, search);
     return null;
   };
-  let baseStore = new BaseStore({ defaultValues: { a: '' }, api: {}, apiExecutor });
+  let baseStore = new BaseStore({ defaultValues: { a: '', b: '' }, api: {}, apiExecutor });
 
   beforeEach(() => {
-    baseStore = new BaseStore({ defaultValues: { a: '' }, api: {}, apiExecutor });
+    baseStore = new BaseStore({ defaultValues: { a: '', b: '' }, api: {}, apiExecutor });
   });
 
   test('baseStore', () => {
