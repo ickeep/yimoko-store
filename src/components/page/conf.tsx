@@ -84,6 +84,7 @@ export interface PageBreadcrumbItem {
 }
 
 export interface PageStoreConfig<V extends object = Record<Key, any>> {
+  name?: string;
   idKey?: string;
   labelKey?: string;
   basePath?: string
@@ -100,6 +101,8 @@ export interface PageStoreConfig<V extends object = Record<Key, any>> {
   // 查询默认参数的值 用于列表/查询页面
   defaultQueryValues?: Partial<V> & Record<Key, any>
   // 操作默认参数的值 用于操作页面 通用使用 idKey
+
+  [key: string]: any;
 }
 
 export interface OperatePageProps<T extends object = Record<Key, any>, R extends object = any> extends Omit<StorePageProps, 'store'> {
