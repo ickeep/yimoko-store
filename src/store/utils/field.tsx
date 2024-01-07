@@ -10,6 +10,9 @@ export const getSearchParamByValue = (value: any) => (typeof value === 'object' 
 
 export const getValueBySearchParam = (searchParam?: string, schema: ISchema = {}, dfValue: any = '') => {
   const { type = Array.isArray(dfValue) ? 'array' : typeof dfValue } = schema;
+  if (typeof searchParam !== 'string') {
+    return searchParam;
+  }
   const typeFnMap: Record<string, Function> = {
     number: (value: string) => Number(value),
     bigint: (value: string) => BigInt(value),
