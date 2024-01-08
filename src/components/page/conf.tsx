@@ -36,9 +36,9 @@ export const getDetailPath = (record: Record<Key, any>, config?: PageStoreConfig
 };
 
 export const jumpOnOperateSuccess = (pageProps: OperatePageProps, nav: NavigateFunction) => {
-  const { jumpOnSuccess = !pageProps.isBoxContent, storeConfig } = pageProps;
+  const { jumpOnSuccess = !pageProps.isBoxContent, config } = pageProps;
   if (jumpOnSuccess === true) {
-    const listPath = getListPath(storeConfig);
+    const listPath = getListPath(config);
     if (listPath) {
       nav(listPath, { replace: true });
     }
@@ -109,7 +109,6 @@ export interface OperatePageProps<T extends object = Record<Key, any>, R extends
   values?: T,
   // 数据源的 Store 例如在编辑页面，需要传入详情数据
   dataStore?: IBaseStoreConfig<any, any>,
-  storeConfig?: PageStoreConfig<T>
   store?: IOperateStoreConfig<T, R>
   parentStore?: IStore
   // 成功后跳转的页面，true为列表页，string为指定页面

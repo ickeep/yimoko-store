@@ -13,11 +13,10 @@ import { FetchDetailPage, ValuesPage } from './detail';
 
 export const EditPage: <T extends object = Record<Key, any>, R extends object = any>(props: OperatePageProps<T, R>) => ReactElement<any, any> | null = observer((props) => {
   const {
-    values, dataStore, storeConfig, store, scope,
+    values, dataStore, config, store,
     onSuccess, onFail, parentStore, isRefreshParent, jumpOnSuccess, ...rest
   } = props;
-  const { fieldsConfig = {}, api, defaultValues, idKey = 'id' } = (storeConfig ?? {}) as PageStoreConfig<any>;
-  const curScope = useDeepMemo(() => ({ $config: storeConfig, ...scope }), [storeConfig, scope]);
+  const { fieldsConfig = {}, api, defaultValues, idKey = 'id' } = (config ?? {}) as PageStoreConfig<any>;
   const runAfter = useOperateRunAfter(props);
 
   const curStore = useDeepMemo(() => {
@@ -41,8 +40,8 @@ export const EditPage: <T extends object = Record<Key, any>, R extends object = 
   }, [api, fieldsConfig, store, runAfter, defaultValues, idKey]);
 
   if (!judgeIsEmpty(values)) {
-    return (<ValuesPage  {...rest} values={values} store={curStore} scope={curScope} />);
+    return (<ValuesPage  {...rest} values={values} store={curStore} config={config} />);
   }
 
-  return <FetchDetailPage {...props} store={curStore} scope={curScope} />;
+  return <FetchDetailPage {...props} store={curStore} config={config} />;
 });

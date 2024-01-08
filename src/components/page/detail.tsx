@@ -14,7 +14,6 @@ import { StorePageContent } from './store-content';
 export interface DetailPageProps<T extends object = Record<Key, any>, R extends object = any> extends Omit<StorePageProps<any>, 'store'> {
   values?: T,
   dataStore?: IStoreConfig<any, any>,
-  storeConfig?: PageStoreConfig<T>,
   store?: IStoreConfig<T, R>
   isPickValues?: boolean
 }
@@ -31,8 +30,8 @@ export const DetailPage: <T extends object = Record<Key, any>, R extends object 
 
 
 export const FetchDetailPage: <T extends object = Record<Key, any>, R extends object = any>(props: DetailPageProps<T, R>) => ReactElement<any, any> | null = observer((props) => {
-  const { dataStore, storeConfig, skeleton, scope } = props;
-  const { api, idKey = 'id' } = storeConfig ?? {};
+  const { dataStore, config, skeleton, scope } = props;
+  const { api, idKey = 'id' } = config ?? {};
 
   const curDataStore = useDeepMemo(() => {
     if (dataStore instanceof BaseStore) {
@@ -50,9 +49,9 @@ export const FetchDetailPage: <T extends object = Record<Key, any>, R extends ob
   const curScope = useMemo(() => ({ ...scope, dataStore: curDataStore }), [scope, curDataStore]);
 
   return (
-    <StorePage store={curDataStore} >
+    <StorePage store={curDataStore} config={config} >
       <StorePageContent skeleton={skeleton} >
-        <ValuesPage {...props} scope={curScope} values={curDataStore?.response?.data} />
+        <ValuesPage {...props} scope={curScope} config={config} values={curDataStore?.response?.data} />
       </StorePageContent>
     </StorePage>
   );
@@ -60,9 +59,8 @@ export const FetchDetailPage: <T extends object = Record<Key, any>, R extends ob
 
 // 当 values 有值时，直接渲染
 export const ValuesPage: <T extends object = Record<Key, any>, R extends object = any>(props: DetailPageProps<T, R>) => ReactElement<any, any> | null = observer((props) => {
-  const { values, dataStore, storeConfig, store, scope, isPickValues = true, ...rest } = props;
-  const { fieldsConfig = {} } = (storeConfig ?? {}) as PageStoreConfig<any>;
-  const curScope = useMemo(() => ({ $config: storeConfig, ...scope }), [storeConfig, scope]);
+  const { values, dataStore, config, store, isPickValues = true, ...rest } = props;
+  const { fieldsConfig = {} } = (config ?? {}) as PageStoreConfig<any>;
 
   const curStore: IStoreConfig = useDeepMemo(() => {
     const { defaultValues } = store ?? {};
@@ -80,5 +78,5 @@ export const ValuesPage: <T extends object = Record<Key, any>, R extends object 
     });
   }, [fieldsConfig, store, values]);
 
-  return (<StorePage  {...rest} scope={curScope} store={curStore} />);
+  return (<StorePage  {...rest} config={config} store={curStore} />);
 });

@@ -19,7 +19,7 @@ describe('edit page', () => {
     render(<EditPage
       components={{ Name }}
       values={{ name: '张三' }}
-      storeConfig={{ fieldsConfig: {}, api: {} }}
+      config={{ fieldsConfig: {}, api: {} }}
       schema={{ type: 'object', properties: { name: { type: 'string', 'x-component': 'Name' } } }}
     />);
     act(() => {
@@ -34,7 +34,7 @@ describe('edit page', () => {
       components={{ Name }}
       isPickValues={false}
       store={store}
-      storeConfig={{ fieldsConfig: { name: {} }, api: { detail: api, edit: { url: 'edit' } } }}
+      config={{ fieldsConfig: { name: {} }, api: { detail: api, edit: { url: 'edit' } } }}
       schema={{ type: 'object', properties: { name: { type: 'string', 'x-component': 'Name' } } }}
     />);
     await act(async () => {

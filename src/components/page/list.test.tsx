@@ -19,7 +19,7 @@ describe('list page', () => {
     render(<ListPage
       store={{ defaultValues: { name: '张三' } }}
       components={{ Name }}
-      storeConfig={{ fieldsConfig: {}, api: {} }}
+      config={{ fieldsConfig: {}, api: {} }}
       schema={{ type: 'object', properties: { name: { type: 'string', 'x-component': 'Name' } } }}
     />);
     act(() => {
@@ -33,7 +33,7 @@ describe('list page', () => {
     render(<ListPage
       components={{ Name }}
       store={store}
-      storeConfig={{ fieldsConfig: { name: {} }, api: { list: api } }}
+      config={{ fieldsConfig: { name: {} }, api: { list: api } }}
       schema={{
         type: 'object',
         properties: {
@@ -61,7 +61,7 @@ describe('list page', () => {
     render(<ListPage
       components={{ Name }}
       store={store}
-      storeConfig={{ idKey: 'name', basePath: '/list', fieldsConfig: { name: {} }, api: { list: api } }}
+      config={{ idKey: 'name', basePath: '/list', fieldsConfig: { name: {} }, api: { list: api } }}
       schema={{
         type: 'object',
         properties: {

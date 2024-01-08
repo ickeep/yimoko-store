@@ -19,7 +19,7 @@ describe('detail page', () => {
     render(<DetailPage
       components={{ Name }}
       values={{ name: '张三' }}
-      storeConfig={{ fieldsConfig: {}, api: {} }}
+      config={{ fieldsConfig: {}, api: {} }}
       schema={{ type: 'object', properties: { name: { type: 'string', 'x-component': 'Name' } } }}
     />);
     act(() => {
@@ -34,7 +34,7 @@ describe('detail page', () => {
       components={{ Name }}
       isPickValues={false}
       store={store}
-      storeConfig={{ fieldsConfig: { name: {} }, api: { detail: api } }}
+      config={{ fieldsConfig: { name: {} }, api: { detail: api } }}
       schema={{ type: 'object', properties: { name: { type: 'string', 'x-component': 'Name' } } }}
     />);
     await act(async () => {

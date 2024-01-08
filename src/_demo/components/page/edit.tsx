@@ -4,7 +4,7 @@ import { EditPage } from '../../../library';
 
 export const EditPageDemo = () => (
   <EditPage<any>
-    storeConfig={{
+    config={{
       fieldsConfig: {},
       defaultValues: { id: '', name: 'edit' },
       api: {

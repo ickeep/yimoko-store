@@ -101,8 +101,8 @@ describe('getDetailPath', () => {
 });
 describe('jumpOnOperateSuccess', () => {
   const mockNav = jest.fn();
-  const storeConfig = { basePath: '/api', path: { list: '/users' }, fieldsConfig: {}, api: {} };
-  const pageProps = { isBoxContent: false, jumpOnSuccess: true, storeConfig };
+  const config = { basePath: '/api', path: { list: '/users' }, fieldsConfig: {}, api: {} };
+  const pageProps = { isBoxContent: false, jumpOnSuccess: true, config };
 
   beforeEach(() => {
     mockNav.mockClear();
@@ -149,7 +149,7 @@ describe('useOperateRunAfter', () => {
     onFail: mockOnFail,
     parentStore: mockParentStore,
     isRefreshParent: true,
-    storeConfig: {
+    config: {
       fieldsConfig: {},
       api: {},
     },

@@ -14,7 +14,7 @@ describe('add page', () => {
 
   test('store', () => {
     const store = new OperateStore();
-    render(<AddPage store={store} storeConfig={{ fieldsConfig: { name: {} }, api: { add: { url: 'add' } } }} />);
+    render(<AddPage store={store} config={{ fieldsConfig: { name: {} }, api: { add: { url: 'add' } } }} />);
     expect(store.fieldsConfig).toEqual({ name: {} });
     expect(store.api).toEqual({ url: 'add' });
   });

@@ -9,15 +9,13 @@ import { OperateStore } from '../../store/operate';
 import { judgeIsEmpty } from '../../tools/tool';
 
 import { OperatePageProps, PageStoreConfig, useOperateRunAfter } from './conf';
-import { StorePageProps, StorePage } from './store';
+import { StorePage } from './store';
 
 export const AddPage: <T extends object = Record<Key, any>, R extends object = any>(props: OperatePageProps<T, R>) => ReactElement<any, any> | null = observer((props) => {
-  const { storeConfig, store, scope, jumpOnSuccess, parentStore, isRefreshParent, onSuccess, onFail, ...rest } = props;
-  const { fieldsConfig = {}, api, defaultValues } = (storeConfig ?? {}) as PageStoreConfig<any>;
+  const { config, store, jumpOnSuccess, parentStore, isRefreshParent, onSuccess, onFail, ...rest } = props;
+  const { fieldsConfig = {}, api, defaultValues } = (config ?? {}) as PageStoreConfig<any>;
 
   const runAfter = useOperateRunAfter(props);
-
-  const curScope = useDeepMemo(() => ({ $config: storeConfig, ...scope }), [storeConfig, scope]);
 
   const curStore: IStoreConfig = useDeepMemo(() => {
     if (store instanceof BaseStore) {
@@ -39,7 +37,5 @@ export const AddPage: <T extends object = Record<Key, any>, R extends object = a
     });
   }, [api, fieldsConfig, store, runAfter, defaultValues]);
 
-  const curProps: StorePageProps<any, any> = useDeepMemo(() => ({ ...rest, scope: curScope, store: curStore }), [curScope, curStore, rest]);
-
-  return (<StorePage  {...curProps} />);
+  return (<StorePage  {...rest} config={config} store={curStore} />);
 });

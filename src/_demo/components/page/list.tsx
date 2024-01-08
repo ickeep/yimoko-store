@@ -4,7 +4,7 @@ import { ListPage } from '../../../library';
 
 export const ListPageDemo = () => (
   <ListPage
-    storeConfig={{
+    config={{
       fieldsConfig: {},
       api: {
         list: { url: '/api/list.json' },
@@ -77,7 +77,6 @@ export const ListPageDemo = () => (
               },
             },
           },
-
         },
       },
     }}

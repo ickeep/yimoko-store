@@ -5,7 +5,7 @@ import { DetailPage } from '../../../library';
 
 export const DetailPageDemo = () => (
   <DetailPage
-    storeConfig={{
+    config={{
       fieldsConfig: {},
       api: {
         detail: { url: '/api/detail.json' },
