@@ -94,8 +94,9 @@ export interface BoxContentRenderProps {
 // eslint-disable-next-line complexity
 export const BoxContentRender = observer((props: BoxContentRenderProps) => {
   const { content, isBind = true, children } = props;
+  const parentStore = useCurStore();
   const { close } = useBoxContent();
-  const bindProps = isBind ? { onClose: close, isBoxContent: true } : {};
+  const bindProps = isBind ? { onClose: close, parentStore, isBoxContent: true } : {};
   if (isValidElement(children)) {
     return isBind ? cloneElement(children, bindProps) : children;
   }
