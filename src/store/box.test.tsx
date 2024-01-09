@@ -103,7 +103,7 @@ describe('BoxStore', () => {
     const Content = (props: any) => <div>{`${props.isBoxContent ? 'true' : 'false'}`}</div>;
 
     const { rerender } = render(<BoxContentRender isBind  ><C /></BoxContentRender>);
-    expect(document.body?.textContent).toBe('onClose,isBoxContent');
+    expect(document.body?.textContent).toBe('onClose,parentStore,isBoxContent');
 
     rerender(<BoxContentRender isBind={false}><C /></BoxContentRender>);
     expect(document.body?.textContent).toBe('');
@@ -115,7 +115,7 @@ describe('BoxStore', () => {
     expect(screen.getByText('true')).toBeInTheDocument();
 
     rerender(<BoxContentRender content={<C />} />);
-    expect(document.body?.textContent).toBe('onClose,isBoxContent');
+    expect(document.body?.textContent).toBe('onClose,parentStore,isBoxContent');
 
     rerender(<BoxContentRender isBind={false} content={<C />} />);
     expect(document.body?.textContent).toBe('');
@@ -128,7 +128,7 @@ describe('BoxStore', () => {
     expect(screen.getByText('false')).toBeInTheDocument();
 
     rerender(<BoxContentRender content={C} />);
-    expect(document.body?.textContent).toBe('onClose,isBoxContent');
+    expect(document.body?.textContent).toBe('onClose,parentStore,isBoxContent');
 
     rerender(<BoxContentRender isBind={false} content={C} />);
     expect(document.body?.textContent).toBe('');
