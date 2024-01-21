@@ -26,13 +26,13 @@ export const getAddPath = (config?: PageStoreConfig) => {
 export const getEditPath = (record: Record<Key, any>, config?: PageStoreConfig) => {
   const { basePath = '', path, idKey = 'id' } = config ?? {};
   const { edit = '/edit' } = path ?? {};
-  return `${basePath}${edit}?${idKey}=${record[idKey]}`;
+  return `${basePath}${edit}?${idKey}=${encodeURIComponent(record[idKey])}`;
 };
 
 export const getDetailPath = (record: Record<Key, any>, config?: PageStoreConfig) => {
   const { basePath = '', path, idKey = 'id' } = config ?? {};
   const { detail = '/detail' } = path ?? {};
-  return `${basePath}${detail}?${idKey}=${record[idKey]}`;
+  return `${basePath}${detail}?${idKey}=${encodeURIComponent(record[idKey])}`;
 };
 
 export const jumpOnOperateSuccess = (pageProps: OperatePageProps, nav: NavigateFunction) => {
