@@ -63,7 +63,6 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
     this.dictConfig = dictConfig;
     this.fieldsConfig = fieldsConfig;
 
-
     this.transform = transform;
 
     this.defaultValues = defaultValues;
@@ -81,6 +80,7 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
     define(this, {
       values: observable,
       dict: observable,
+      dictConfig: observable, // 以支持设置和重置时及时更新
       dictLoading: observable,
       response: observable,
       loading: observable,
@@ -96,6 +96,7 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
       setDict: action,
       setDictLoading: action,
       setDictByField: action,
+      resetDict: action,
 
       setLoading: action,
       setResponse: action,
@@ -186,6 +187,11 @@ export class BaseStore<V extends object = IStoreValues, R extends object = any> 
   setDictByField = (field: IField<V>, value: any) => this.dict[field] = value;
 
   setDictLoading = (field: IField<V>, value: boolean) => this.dictLoading[field] = value;
+
+  // 重置字典配置 触发重新获取字典数据
+  resetDict = () => {
+    this.dictConfig = [...this.dictConfig];
+  };
 
   setLoading = (loading: boolean) => this.loading = loading;
 
